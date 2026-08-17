@@ -1,34 +1,32 @@
 package model;
 
-public class StatusPedido {
-public enum Status {
+public enum StatusPedido {
     PENDENTE,
     PREPARANDO,
     PRONTO,
     ENVIADO;
 
-    public static Status pendente() {
+    public static StatusPedido pendente() {
         return PENDENTE;
     }
 
-    public static Status preparando() {
+    public static StatusPedido preparando() {
         return PREPARANDO;
     }
 
-    public static Status pronto() {
+    public static StatusPedido pronto() {
         return PRONTO;
     }
 
-    public static Status enviado() {
+    public static StatusPedido enviado() {
         return ENVIADO;
     }
 }
-}
 
-//forma de usar o enum
-/* Status status = Status.preparando();
 
-if (status == Status.PREPARANDO) {
+//forma de usar o enum. Obs:get e set no arquivo q for usar o enum
+/* StatusPedido StatusPedido = StatusPedido.preparando();
+
+if (StatusPedido == StatusPedido.PREPARANDO) {
     bglgenericodemonstracao();
 } */
-
