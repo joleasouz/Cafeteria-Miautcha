@@ -38,9 +38,27 @@ public class Pedido{
             total += item.calcularSubtotal();
         }
         this.valorTotal = total;
-        
         return this.valorTotal;
     }
 
     public void finalizarPedido(){};
+
+    public int getId(){ return id; }
+
+    public LocalDateTime getData(){ return data; }
+
+    public StatusPedido getStatus(){ return status; }
+    public void setStatus(StatusPedido status){ 
+        this.status = status; 
+    }
+
+    public double getValorTotal(){ return valorTotal; }
+
+    public Cliente getCliente(){ return cliente; }
+    public void setCliente(Cliente cliente){ 
+        this.cliente = cliente; 
+    }
+
+    public List<ItemPedido> getItens(){ return itens; }
+
 }

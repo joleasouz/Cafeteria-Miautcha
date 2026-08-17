@@ -1,14 +1,21 @@
 package model;
 
+/* --- Jolea
+
+    Vitoria, tive que arrumar o erro daqui pra poder rodar o teste dos Pedidos,
+    mas basicamente você tinha declarado telefone como int na linha 8 e como String no
+    método setTelefone(). O mesmo aconteceu com o cpf. Deixei tudo como String porque é o padrão
+    do diagrama de classes */
+
 public class Cliente  {
     private int id;
     private String nome;
     private String cpf;
     public String email;
-    private int telefone;
+    private String telefone;
 
 
-public Cliente(int id, String nome, int cpf, String email, int telefone) {
+public Cliente(int id, String nome, String cpf, String email, String telefone) {
     this.id = id;
     this.nome = nome;
     this.cpf = cpf;
