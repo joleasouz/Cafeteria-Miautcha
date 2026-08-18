@@ -5,7 +5,7 @@ package model;
     Vitoria, tive que arrumar o erro daqui pra poder rodar o teste dos Pedidos,
     mas basicamente você tinha declarado telefone como int na linha 8 e como String no
     método setTelefone(). O mesmo aconteceu com o cpf. Deixei tudo como String porque é o padrão
-    do diagrama de classes */
+    do diagrama de classes */ 
 
 public class Cliente  {
     private int id;
