@@ -38,34 +38,36 @@ O **Miautcha System** é uma aplicação desktop desenvolvida em Java com interf
 
 O sistema foi estruturado com base no modelo orientado a objetos (*DiagramaGatocafe*), priorizando o desacoplamento de responsabilidades:
 
+```text
 Miautcha/
 │
 ├── src/
-│       └── cafebao/
-│           │
-│           ├── model/                     # Módulos de Dados (Diagrama)
-│           │   ├── Cliente.java           # [Vitoria Brenda] id, nome, cpf, email, telefone
-│           │   ├── Produto.java           # [Maria Eduarda] id, nomeProduto, categoria, preco, quantidadeEmEstoque
-│           │   ├── Pedido.java            # [Julia Silva] id, data, status, valorTotal
-│           │   ├── ItemPedido.java        # [Julia Silva] id, quantidade, precoUnitario
-│           │   ├── Comanda.java           # [Larissa Peters] id, mesa, status
-│           │   └── StatusPedido.java      # [Larissa Peters] Enum (ex: PENDENTE, FINALIZADO, CANCELADO)
-│           │
-│           ├── data/                      # Banco em Memória
-│           │   ├── BancoDados.java        # **Listas estáticas para compartilhar dados**
-│           │   ├── ClienteDAO.java        #
-│           │
-│           ├── view/                      # Interfaces Gráficas (Swing)
-│           │   ├── Interface.java         # **JFrame principal com JTabbedPane (Abas)**
-│           │   ├── Formulario.java        # [Julia Silva] Tela/Painel de Novo Pedido / Balcão
-│           │   ├── PainelClientes.java    # [Vitoria Brenda] Tela/Painel de busca e histórico de Clientes
-│           │   ├── PainelEstoque.java     # [Maria Eduarda] Tela/Painel do Cardápio e Alertas de Estoque
-│           │   └── PainelComandas.java    # [Larissa Peters] Painel com os cards/botões de Comanda Digital
-│           │
-│           └── Main.java                  # **Ponto de entrada, carrega Mocks e abre a Interface**
+│   └── model/                     # Módulos de Dados (Diagrama)
+│       │   ├── Cliente.java           # [Vitoria Brenda] id, nome, cpf, email, telefone
+│       │   ├── Produto.java           # [Maria Eduarda] id, nomeProduto, categoria, preco, quantidadeEmEstoque
+│       │   ├── Pedido.java            # [Julia Silva] id, data, status, valorTotal
+│       │   ├── ItemPedido.java        # [Julia Silva] id, quantidade, precoUnitario
+│       │   ├── Comanda.java           # [Larissa Peters] id, mesa, status
+│       │   └── StatusPedido.java      # [Larissa Peters] Enum (ex: PENDENTE, FINALIZADO, CANCELADO)
+│       │
+│       ├── data/                      # Persistência e Acesso a Dados
+│       │   ├── BancoDados.java        # Listas estáticas para compartilhar dados em memória
+│       │   ├── ConexaoBanco.java      # Gerenciador de conexão JDBC com MySQL
+│       │   ├── ClienteDAO.java        # Métodos de CRUD para Clientes no MySQL
+│       │   ├── ProdutoDAO.java        # Métodos de CRUD para Produtos no MySQL
+│       │   └── PedidoDAO.java         # Métodos de CRUD para Pedidos no MySQL
+│       │
+│       ├── view/                      # Interfaces Gráficas (Swing)
+│       │   ├── Interface.java         # JFrame principal com JTabbedPane (Abas)
+│       │   ├── Formulario.java        # [Julia Silva] Tela/Painel de Novo Pedido / Balcão
+│       │   ├── PainelClientes.java    # [Vitoria Brenda] Tela/Painel de busca e histórico de Clientes
+│       │   ├── PainelEstoque.java     # [Maria Eduarda] Tela/Painel do Cardápio e Alertas de Estoque
+│       │   └── PainelComandas.java    # [Larissa Peters] Painel com os cards/botões de Comanda Digital
+│       │
+│       └── Main.java                  # Ponto de entrada, carrega Mocks e abre a Interface
 │
-├── bin/                                   # Arquivos compilados (.class)
-└── README.md                              # Documentação do projeto
+├── bin/                               # Arquivos compilados (.class)
+└── README.md                          # Documentação do projeto
 
 ---
 
