@@ -13,6 +13,14 @@ public class ItemPedido {
         this.precoUnitario = precoUnitario;
     }
 
+    /*---Doda
+            atualiza o estoque automatiamente*/
+    public void processarBaixa() {
+        if (this.produto != null) {
+            this.produto.baixarEstoque(this.produto.getId(), this.quantidade);
+        }
+    }
+
     public double calcularSubtotal() {
         return this.quantidade * this.precoUnitario;
     }
