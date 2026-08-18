@@ -66,7 +66,10 @@ public class Formulario extends JPanel {
     }
 
     /*   --- Jolea
-                Dados de teste com os arraylist que nem eu comentei no grupo*/
+                Dados de teste com os arraylist que nem eu comentei no grupo
+            
+        --- Doda
+                fiz o arquivo de produtos com base nessas entradas*/
     private static List<ProdutoDemo> criarCatalogoDemo() {
         List<ProdutoDemo> lista = new ArrayList<>();
         lista.add(new ProdutoDemo("Miautcha", 20.90, 100));
