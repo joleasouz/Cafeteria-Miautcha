@@ -68,7 +68,7 @@ Miautcha/
 │
 ├── bin/                               # Arquivos compilados (.class)
 └── README.md                          # Documentação do projeto
-
+```
 ---
 
 ## Divisão de Responsabilidades (Grupo de 4)
