@@ -1,6 +1,7 @@
 package view;
 
 import data.Conexao;
+import view.gerenciarFontes.Fontes;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -14,7 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
 
-public class PainelEstoque extends JPanel {
+public class PainelEstoque extends JPanel implements Interface {
     private JTable tabela;
     private DefaultTableModel modeloTabela;
     private JTextField txtNome, txtPreco, txtQuantidadeCad, txtPesquisa, txtAjusteQtd;
@@ -22,35 +23,27 @@ public class PainelEstoque extends JPanel {
     private JLabel lblStatusEstoque;
     private int idProdutoSelecionado = -1;
 
-    // Paleta de Cores Inspirada no Formulario.java (Estilo Cafeteria)
-    private static final Color COR_FUNDO_PAINEL = new Color(250, 246, 240); // Off-white aconchegante
-    private static final Color COR_CABECALHO = new Color(111, 78, 55);       // Marrom Café
-    private static final Color COR_TEXTO_CABECALHO = Color.WHITE;
-    private static final Color COR_BOTAO_PRIMARIO = new Color(139, 90, 43);   // Marrom Claro
-    private static final Color COR_BOTAO_VERDE = new Color(76, 175, 80);      // Adicionar
-    private static final Color COR_BOTAO_VERMELHO = new Color(211, 47, 47);   // Excluir/Baixa
-    private static final Color COR_SELECAO_TABELA = new Color(230, 215, 195);
-
     public PainelEstoque() {
         setLayout(new BorderLayout(15, 15));
         setBackground(COR_FUNDO_PAINEL);
         setBorder(new EmptyBorder(15, 15, 15, 15));
 
-        // --- 1. PAINEL SUPERIOR: Cadastro de Produto ---
-        JPanel painelFormulario = new JPanel(new GridLayout(2, 4, 12, 8));
+        // painel superiror - cadastro de produtos
+        JPanel painelFormulario = new JPanel(new GridLayout(2, 4, 15, 10));
         painelFormulario.setBackground(COR_FUNDO_PAINEL);
+        painelFormulario.setPreferredSize(new Dimension(0, 120));
         painelFormulario.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(COR_CABECALHO, 1, true),
                 " Cadastrar Novo Produto ",
                 0, 0,
-                new Font("SansSerif", Font.BOLD, 13),
+                Fontes.get(13f),
                 COR_CABECALHO
         ));
 
         txtNome = criarCampoTexto();
         txtPreco = criarCampoTexto();
         txtQuantidadeCad = criarCampoTexto();
-        btnCadastrar = criarBotaoPersonalizado("Cadastrar Produto", COR_BOTAO_PRIMARIO);
+        btnCadastrar = Interface.botaoArredondado("Cadastrar Produto", COR_BOTAO_PRIMARIO);
 
         painelFormulario.add(criarRotulo("Nome do Produto:"));
         painelFormulario.add(criarRotulo("Preço (R$):"));
@@ -64,7 +57,7 @@ public class PainelEstoque extends JPanel {
 
         add(painelFormulario, BorderLayout.NORTH);
 
-        // --- 2. PAINEL CENTRAL: Tabela Estilizada ---
+        // painel central - tabela de produtos
         modeloTabela = new DefaultTableModel(new Object[]{"ID", "Nome", "Preço (R$)", "Qtd Estoque", "Status"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -76,18 +69,18 @@ public class PainelEstoque extends JPanel {
         tabela.setFont(new Font("SansSerif", Font.PLAIN, 12));
         tabela.setRowHeight(28);
         tabela.setSelectionBackground(COR_SELECAO_TABELA);
-        tabela.setSelectionForeground(Color.BLACK);
+        tabela.setSelectionForeground(COR_TEXTO);
         tabela.setShowVerticalLines(false);
         tabela.setGridColor(new Color(230, 230, 230));
 
-        // Estilo do Cabeçalho
+        // estilo do cabeçalho
         JTableHeader header = tabela.getTableHeader();
         header.setFont(new Font("SansSerif", Font.BOLD, 13));
         header.setBackground(COR_CABECALHO);
-        header.setForeground(COR_TEXTO_CABECALHO);
+        header.setForeground(COR_TEXTO);
         header.setPreferredSize(new Dimension(100, 32));
 
-        // Centralizar texto nas colunas
+        // centralizar texto nas colunas
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         tabela.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
@@ -100,11 +93,11 @@ public class PainelEstoque extends JPanel {
         scrollPane.setBorder(BorderFactory.createLineBorder(new Color(220, 220, 220)));
         add(scrollPane, BorderLayout.CENTER);
 
-        // --- 3. PAINEL INFERIOR: Controle de Estoque & Operações ---
+        // painel inferior - controle de estoque e ações
         JPanel painelInferior = new JPanel(new GridLayout(2, 1, 10, 10));
         painelInferior.setBackground(COR_FUNDO_PAINEL);
 
-        // Subpainel de Entrada/Saída de Estoque
+        // subpainel de entrada e saida de estoque
         JPanel painelAjuste = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 5));
         painelAjuste.setBackground(COR_FUNDO_PAINEL);
         painelAjuste.setBorder(BorderFactory.createTitledBorder(
@@ -117,8 +110,8 @@ public class PainelEstoque extends JPanel {
 
         txtAjusteQtd = criarCampoTexto();
         txtAjusteQtd.setPreferredSize(new Dimension(60, 28));
-        btnAdicionarEstoque = criarBotaoPersonalizado("+ Entrada", COR_BOTAO_VERDE);
-        btnRemoverEstoque = criarBotaoPersonalizado("- Baixa", COR_BOTAO_VERMELHO);
+        btnAdicionarEstoque = Interface.botaoArredondado("+ Entrada", COR_BOTAO_VERDE);
+        btnRemoverEstoque = Interface.botaoArredondado("- Baixa", COR_BOTAO_VERMELHO);
 
         lblStatusEstoque = new JLabel("Status: Selecione um produto");
         lblStatusEstoque.setFont(new Font("SansSerif", Font.BOLD, 12));
@@ -136,9 +129,9 @@ public class PainelEstoque extends JPanel {
 
         txtPesquisa = criarCampoTexto();
         txtPesquisa.setPreferredSize(new Dimension(160, 28));
-        btnPesquisar = criarBotaoPersonalizado("Pesquisar", COR_BOTAO_PRIMARIO);
-        btnAtualizar = criarBotaoPersonalizado("Atualizar Tabela", COR_BOTAO_PRIMARIO);
-        btnExcluir = criarBotaoPersonalizado("Excluir Produto", COR_BOTAO_VERMELHO);
+        btnPesquisar = Interface.botaoArredondado("Pesquisar", COR_BOTAO_PRIMARIO);
+        btnAtualizar = Interface.botaoArredondado("Atualizar Tabela", COR_BOTAO_PRIMARIO);
+        btnExcluir = Interface.botaoArredondado("Excluir Produto", COR_BOTAO_VERMELHO);
 
         painelAcoes.add(criarRotulo("Buscar Nome:"));
         painelAcoes.add(txtPesquisa);
@@ -224,26 +217,12 @@ public class PainelEstoque extends JPanel {
     private JLabel criarRotulo(String texto) {
         JLabel label = new JLabel(texto);
         label.setFont(new Font("SansSerif", Font.BOLD, 12));
-        label.setForeground(COR_CABECALHO);
+        label.setForeground(COR_TEXTO);
+        label.setVerticalAlignment(SwingConstants.BOTTOM);
         return label;
     }
 
-    private JButton criarBotaoPersonalizado(String texto, Color corFundo) {
-        JButton botao = new JButton(texto);
-        botao.setFont(new Font("SansSerif", Font.BOLD, 11));
-        botao.setBackground(corFundo);
-        botao.setForeground(Color.WHITE);
-        botao.setFocusPainted(false);
-        botao.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        botao.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(corFundo.darker(), 1, true),
-                BorderFactory.createEmptyBorder(6, 12, 6, 12)
-        ));
-        return botao;
-    }
-
     // rn e bd
-
     private void cadastrarProduto() {
         String nome = txtNome.getText().trim();
         String precoStr = txtPreco.getText().trim().replace(",", ".");
@@ -282,7 +261,6 @@ public class PainelEstoque extends JPanel {
             JOptionPane.showMessageDialog(this, "Erro no Banco de Dados: " + e.getMessage(), "Erro MySQL", JOptionPane.ERROR_MESSAGE);
         }
     }
-
     private void alterarEstoque(boolean aumentar) {
         if (idProdutoSelecionado == -1) {
             JOptionPane.showMessageDialog(this, "Selecione um produto na tabela primeiro!", "Aviso", JOptionPane.WARNING_MESSAGE);
@@ -387,7 +365,7 @@ public class PainelEstoque extends JPanel {
                 modeloTabela.addRow(new Object[]{id, nome, String.format("%.2f", preco), qtd, status});
             }
         } catch (SQLException e) {
-            // Silencioso caso a conexão inicial ainda não esteja configurada
+            // silencioso caso a conexão inicial ainda não esteja configurada
         }
     }
 
@@ -399,13 +377,13 @@ public class PainelEstoque extends JPanel {
 
             if (qtdAtual == 0) {
                 lblStatusEstoque.setText("ALERTA: PRODUTO ESGOTADO!");
-                lblStatusEstoque.setForeground(COR_BOTAO_VERMELHO);
+                lblStatusEstoque.setForeground(COR_TEXTO);
             } else if (qtdAtual <= 5) {
                 lblStatusEstoque.setText("ATENÇÃO: ESTOQUE BAIXO (" + qtdAtual + " un)");
-                lblStatusEstoque.setForeground(new Color(230, 124, 11));
+                lblStatusEstoque.setForeground(COR_TEXTO);
             } else {
                 lblStatusEstoque.setText("ESTOQUE NORMAL (" + qtdAtual + " un)");
-                lblStatusEstoque.setForeground(new Color(46, 125, 50));
+                lblStatusEstoque.setForeground(COR_TEXTO);
             }
         }
     }
@@ -418,7 +396,7 @@ public class PainelEstoque extends JPanel {
         txtPesquisa.setText("");
         idProdutoSelecionado = -1;
         lblStatusEstoque.setText("Status: Selecione um produto");
-        lblStatusEstoque.setForeground(Color.BLACK);
+        lblStatusEstoque.setForeground(COR_TEXTO);
         tabela.clearSelection();
     }
 }

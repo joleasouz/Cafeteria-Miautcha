@@ -1,0 +1,12 @@
+package data;
+
+import java.util.ArrayList;
+import model.Cliente;
+import model.Produto;
+import model.Pedido;
+
+public class RepoCdD {
+  public static ArrayList<Cliente> clientes = new arrayList<>();
+  public static ArrayList<Produto> produtos = new arrayList<>();
+  public static ArrayList<Pedido> pedidos = new arrayList<>();
+}

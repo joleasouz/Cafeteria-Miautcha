@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-public class Formulario extends JPanel {
+public class Formulario extends JPanel implements Interface {
 
     private static class ProdutoDemo {
         String nome;
@@ -173,11 +173,11 @@ public class Formulario extends JPanel {
 
         if (produto.estoque <= 0) {
             lblEstoque.setText("Esgotado");
-            lblEstoque.setForeground(Color.RED);
+            lblEstoque.setForeground(COR_TEXTO);
             btnAdicionar.setEnabled(false);
         } else {
             lblEstoque.setText("Estoque: " + produto.estoque);
-            lblEstoque.setForeground(Color.DARK_GRAY);
+            lblEstoque.setForeground(COR_TEXTO);
             btnAdicionar.setEnabled(true);
         }
     }
