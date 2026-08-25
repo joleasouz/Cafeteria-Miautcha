@@ -3,8 +3,8 @@ import javax.swing.JTabbedPane;
 import view.Formulario;
 import view.PainelEstoque;
 
-public class aba extends JFrame {
-    public aba() {
+public class principal extends JFrame {
+    public principal() {
        setTitle("Miaucha");
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -21,6 +21,6 @@ public class aba extends JFrame {
     }
 
     public static void main(String[] args) {
-        new aba();
+        new principal();
     }
 }
