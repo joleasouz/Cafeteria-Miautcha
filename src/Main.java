@@ -1,16 +1,24 @@
-import data.RepositorioMock;
-import model.Cliente;
-import model.Produto;
-import view.Interface;
+import view.PainelEstoque;
+
+import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
-        RepoCdD.clientes.add(new Cliente(1, "Ana Silva", "111.111.111-11", "ana@email.com", "11999990000"));
-        RepoCdD.clientes.add(new Cliente(2, "Bruno Costa", "222.222.222-22", "bruno@email.com", "11988880000"));
+        // Define o visual padrão do sistema operacional
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception ignored) {}
 
-        RepoCdD.produtos.add(new Produto(1, "Café Expresso", 6.50, 50));
-        RepoCdD.produtos.add(new Produto(2, "Pão de Queijo", 4.00, 30));
+        SwingUtilities.invokeLater(() -> {
+            JFrame janela = new JFrame("Cafeteria Miautcha - Gestão de Estoque");
+            janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            janela.setSize(900, 600);
+            janela.setLocationRelativeTo(null); // Centraliza na tela
 
-        new Interface().setVisible(true);
+            // Adiciona o painel de estoque estilizado
+            janela.add(new PainelEstoque());
+
+            janela.setVisible(true);
+        });
     }
 }
