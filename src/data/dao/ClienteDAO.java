@@ -1,8 +1,10 @@
-package data;
+package data.dao;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import data.Conexao;
 
 public class ClienteDAO{
     public List<Cliente> buscarClientes(String termo){

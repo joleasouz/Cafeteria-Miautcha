@@ -44,7 +44,6 @@ public class PainelEstoque extends JPanel implements Interface {
         txtPreco = criarCampoTexto();
         txtQuantidadeCad = criarCampoTexto();
         btnCadastrar = Interface.botaoArredondado("Cadastrar Produto", COR_BOTAO_PRIMARIO);
-
         painelFormulario.add(criarRotulo("Nome do Produto:"));
         painelFormulario.add(criarRotulo("Preço (R$):"));
         painelFormulario.add(criarRotulo("Qtd Inicial:"));

@@ -3,10 +3,10 @@ import javax.swing.JTabbedPane;
 import view.Formulario;
 import view.PainelEstoque;
 
-public class principal extends JFrame {
-    public principal() {
+public class Principal extends JFrame {
+    public Principal() {
        setTitle("Miaucha");
-        setSize(400, 300);
+        setSize(3000, 2000);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JTabbedPane abas = new JTabbedPane();
@@ -21,6 +21,6 @@ public class principal extends JFrame {
     }
 
     public static void main(String[] args) {
-        new principal();
+        new Principal();
     }
 }

@@ -1,5 +1,4 @@
 package view;
-//main temporario no final, Jolea do futuo NÂO ESQUECE DE TIRAR e fazer o bglh lá do crud
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +60,7 @@ public class Formulario extends JPanel implements Interface {
         this.aoNavegar = aoNavegar;
 
         setLayout(new BorderLayout());
+        setBackground(COR_FUNDO_PAINEL);
         add(criarCabecalho(), BorderLayout.NORTH);
         add(criarCorpo(), BorderLayout.CENTER);
     }
@@ -87,32 +87,25 @@ public class Formulario extends JPanel implements Interface {
 
     private JComponent criarCabecalho() {
         JPanel cabecalho = new JPanel(new BorderLayout());
+        cabecalho.setBackground(COR_CABECALHO);
 
         JLabel titulo = new JLabel("MIAUTCHA SYSTEM", SwingConstants.CENTER);
         titulo.setFont(titulo.getFont().deriveFont(Font.BOLD, 26f));
+        titulo.setForeground(COR_TEXTO_BOTAO);
         titulo.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
         cabecalho.add(titulo, BorderLayout.NORTH);
 
         JPanel navBar = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 10));
-        navBar.setBackground(new Color(184, 191, 96));
-        navBar.add(criarBotaoNav("Pedido", "pedido"));
-        navBar.add(criarBotaoNav("Clientes", "clientes"));
-        navBar.add(criarBotaoNav("Estoque", "estoque"));
-        navBar.add(criarBotaoNav("Comandas", "comandas"));
+        navBar.setBackground(COR_CABECALHO);
         cabecalho.add(navBar, BorderLayout.SOUTH);
 
         return cabecalho;
     }
 
-    private JButton criarBotaoNav(String texto, String destino) {
-        JButton botao = new JButton(texto);
-        botao.addActionListener(e -> aoNavegar.accept(destino));
-        return botao;
-    }
-
     // form de pedido
     private JComponent criarCorpo() {
         JPanel corpo = new JPanel(new BorderLayout(10, 10));
+        corpo.setBackground(COR_FUNDO_PAINEL);
         corpo.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         corpo.add(criarPainelCatalogo(), BorderLayout.WEST);
@@ -125,9 +118,13 @@ public class Formulario extends JPanel implements Interface {
     private JComponent criarPainelCatalogo() {
         JPanel painel = new JPanel(new BorderLayout());
         painel.setPreferredSize(new Dimension(320, 0));
-        painel.setBorder(BorderFactory.createTitledBorder("Cardápio"));
+        painel.setBackground(COR_FUNDO_PAINEL);
+        javax.swing.border.TitledBorder borda = BorderFactory.createTitledBorder("Cardápio");
+        borda.setTitleColor(COR_TITULO);
+        painel.setBorder(borda);
 
         JPanel listaProdutos = new JPanel();
+        listaProdutos.setBackground(COR_FUNDO_PAINEL);
         listaProdutos.setLayout(new BoxLayout(listaProdutos, BoxLayout.Y_AXIS));
 
         for (ProdutoDemo produto : catalogo) {
@@ -145,17 +142,25 @@ public class Formulario extends JPanel implements Interface {
     private JPanel criarLinhaProduto(ProdutoDemo produto) {
         JPanel linha = new JPanel(new BorderLayout(10, 0));
         linha.setMaximumSize(new Dimension(Integer.MAX_VALUE, 65));
+        linha.setBackground(COR_FUNDO_PAINEL);
         linha.setBorder(BorderFactory.createEtchedBorder());
 
         JPanel textos = new JPanel(new GridLayout(3, 1));
-        textos.add(new JLabel(produto.nome));
-        textos.add(new JLabel(String.format("R$ %.2f", produto.preco)));
+        textos.setBackground(COR_FUNDO_PAINEL);
+
+        JLabel lblNome = new JLabel(produto.nome);
+        lblNome.setForeground(COR_TEXTO);
+        textos.add(lblNome);
+
+        JLabel lblPreco = new JLabel(String.format("R$ %.2f", produto.preco));
+        lblPreco.setForeground(COR_TEXTO);
+        textos.add(lblPreco);
 
         JLabel lblEstoque = new JLabel();
         textos.add(lblEstoque);
         labelsEstoque.put(produto, lblEstoque);
 
-        JButton btnAdicionar = new JButton("+");
+        JButton btnAdicionar = Interface.botaoArredondado("+", COR_BOTAO_VERDE);
         btnAdicionar.addActionListener(e -> adicionarItemAoPedido(produto));
         botoesAdicionar.put(produto, btnAdicionar);
 
@@ -173,7 +178,7 @@ public class Formulario extends JPanel implements Interface {
 
         if (produto.estoque <= 0) {
             lblEstoque.setText("Esgotado");
-            lblEstoque.setForeground(COR_TEXTO);
+            lblEstoque.setForeground(COR_BOTAO_VERMELHO);
             btnAdicionar.setEnabled(false);
         } else {
             lblEstoque.setText("Estoque: " + produto.estoque);
@@ -185,7 +190,10 @@ public class Formulario extends JPanel implements Interface {
     // painel de pedido
     private JComponent criarPainelPedido() {
         JPanel painel = new JPanel(new BorderLayout(10, 10));
-        painel.setBorder(BorderFactory.createTitledBorder("Novo Pedido"));
+        painel.setBackground(COR_FUNDO_PAINEL);
+        javax.swing.border.TitledBorder borda = BorderFactory.createTitledBorder("Novo Pedido");
+        borda.setTitleColor(COR_TITULO);
+        painel.setBorder(borda);
 
         painel.add(criarPainelCliente(), BorderLayout.NORTH);
         painel.add(criarPainelTabelaItens(), BorderLayout.CENTER);
@@ -196,16 +204,21 @@ public class Formulario extends JPanel implements Interface {
 
     private JPanel criarPainelCliente() {
         JPanel painel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        painel.add(new JLabel("CPF do cliente:"));
+        painel.setBackground(COR_FUNDO_PAINEL);
+
+        JLabel lblCpf = new JLabel("CPF do cliente:");
+        lblCpf.setForeground(COR_TEXTO);
+        painel.add(lblCpf);
 
         txtCpf = new JTextField(15);
         painel.add(txtCpf);
 
-        JButton btnBuscar = new JButton("Buscar cliente");
+        JButton btnBuscar = Interface.botaoArredondado("Buscar cliente", COR_BOTAO_PRIMARIO);
         btnBuscar.addActionListener(e -> buscarCliente());
         painel.add(btnBuscar);
 
         lblClienteEncontrado = new JLabel("Nenhum cliente selecionado");
+        lblClienteEncontrado.setForeground(COR_TEXTO);
         painel.add(lblClienteEncontrado);
 
         return painel;
@@ -220,25 +233,30 @@ public class Formulario extends JPanel implements Interface {
             }
         };
         tabelaItens = new JTable(modeloTabela);
+        tabelaItens.setSelectionBackground(COR_SELECAO_TABELA);
+        tabelaItens.setSelectionForeground(COR_TEXTO);
         return new JScrollPane(tabelaItens);
     }
 
     private JPanel criarPainelRodape() {
         JPanel painel = new JPanel(new BorderLayout());
+        painel.setBackground(COR_FUNDO_PAINEL);
 
-        JButton btnRemover = new JButton("Remover item selecionado");
+        JButton btnRemover = Interface.botaoArredondado("Remover item selecionado", COR_BOTAO_VERMELHO);
         btnRemover.addActionListener(e -> removerItemSelecionado());
 
-        JButton btnCancelar = new JButton("Cancelar pedido");
+        JButton btnCancelar = Interface.botaoArredondado("Cancelar pedido", COR_BOTAO_VERMELHO);
         btnCancelar.addActionListener(e -> cancelarPedido());
 
         lblTotal = new JLabel("Total: R$ 0,00");
         lblTotal.setFont(lblTotal.getFont().deriveFont(Font.BOLD, 16f));
+        lblTotal.setForeground(COR_TITULO);
 
-        JButton btnFinalizar = new JButton("Finalizar Pedido");
+        JButton btnFinalizar = Interface.botaoArredondado("Finalizar Pedido", COR_BOTAO_VERDE);
         btnFinalizar.addActionListener(e -> finalizarPedido());
 
         JPanel botoes = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        botoes.setBackground(COR_FUNDO_PAINEL);
         botoes.add(btnRemover);
         botoes.add(btnCancelar);
         botoes.add(btnFinalizar);
@@ -364,12 +382,12 @@ public class Formulario extends JPanel implements Interface {
         atualizarTotal();
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         JFrame frame = new JFrame("Miautcha - Teste do Formulario");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(1000, 650);
         frame.setLocationRelativeTo(null);
         frame.add(new Formulario());
         frame.setVisible(true);
-    }
+    }*/
 }
