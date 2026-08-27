@@ -16,10 +16,10 @@ public class Pedido{
     public Pedido(int id, Cliente cliente, LocalDateTime data, StatusPedido status, double valorTotal){
         this.id = id;
         this.cliente = cliente;
-        this.data = LocalDateTime.now();
+        this.data = data;
         this.status = status;
         this.itens = new ArrayList<>();
-        this.valorTotal = 0;
+        this.valorTotal = valorTotal;
     } 
 
     public void adicionarItem(ItemPedido item){

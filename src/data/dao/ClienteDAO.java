@@ -3,6 +3,7 @@ package data.dao;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import model.Cliente;
 
 import data.Conexao;
 
@@ -11,7 +12,7 @@ public class ClienteDAO{
             List<Cliente> lista = new ArrayList<>();
              String sql = "SELECT * FROM cliente WHERE nome LIKE ? OR cpf LIKE ?";
 
-        try (Connection conn = Conexao.getConexao();
+        try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, "%" + termo + "%");
