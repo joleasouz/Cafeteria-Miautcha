@@ -6,7 +6,8 @@ import view.PainelEstoque;
 public class Principal extends JFrame {
     public Principal() {
        setTitle("Miaucha");
-        setSize(3000, 2000);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JTabbedPane abas = new JTabbedPane();
