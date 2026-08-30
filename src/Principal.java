@@ -1,6 +1,7 @@
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import view.Formulario;
+import view.PainelClientes;
 import view.PainelEstoque;
 
 public class Principal extends JFrame {
@@ -14,8 +15,10 @@ public class Principal extends JFrame {
 
         Formulario aba1 = new Formulario();
         PainelEstoque aba2 = new PainelEstoque();
+        PainelClientes aba3 = new PainelClientes();
         abas.addTab("Formulario", aba1);
         abas.addTab("Estoque", aba2);
+         abas.addTab("Clientes", aba3);
 
         add(abas);
         setVisible(true);
