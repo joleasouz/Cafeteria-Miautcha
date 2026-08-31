@@ -1,19 +1,10 @@
 package view;
 
-import data.Conexao;
-import view.gerenciarFontes.Fontes;
-
+import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
-import java.awt.*;
-import java.awt.event.ActionEvent; 
-import java.awt.event.ActionListener;
-import java.sql.*;
 
 public class PainelClientes extends JPanel implements Interface {
 
@@ -35,15 +26,11 @@ public class PainelClientes extends JPanel implements Interface {
         painelEsquerda.setPreferredSize(new Dimension(220, 0));
         painelEsquerda.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(COR_CABECALHO, 1, true),
-                " Clientes Cadastrados ",
-                0, 0,
-                Fontes.get(13f),
-                COR_CABECALHO
+                " Clientes Cadastrados "
         ));
 
         modeloListaClientes = new DefaultListModel<>();
         listaClientesEsquerda = new JList<>(modeloListaClientes);
-        listaClientesEsquerda.setFont(Fontes.get(12f));
         listaClientesEsquerda.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         JScrollPane scrollLista = new JScrollPane(listaClientesEsquerda);
@@ -62,10 +49,7 @@ public class PainelClientes extends JPanel implements Interface {
         painelFormulario.setPreferredSize(new Dimension(0, 100));
         painelFormulario.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(COR_CABECALHO, 1, true),
-                " Cadastrar Novo Cliente ",
-                0, 0,
-                Fontes.get(13f),
-                COR_CABECALHO
+                " Cadastrar Novo Cliente "
         ));
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -105,10 +89,7 @@ public class PainelClientes extends JPanel implements Interface {
         painelTabela.setBackground(COR_FUNDO_PAINEL);
         painelTabela.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(COR_CABECALHO, 1, true),
-                " Histórico de Pedidos ",
-                0, 0,
-                Fontes.get(13f),
-                COR_CABECALHO
+                " Histórico de Pedidos "
         ));
 
         String[] colunas = {"ID Pedido", "Nome Cliente", "CPF", "Data", "Itens", "Total (R$)"};
@@ -136,7 +117,6 @@ public class PainelClientes extends JPanel implements Interface {
 
     private JLabel criarRotulo(String texto) {
         JLabel label = new JLabel(texto);
-        label.setFont(Fontes.get(12f));
         label.setForeground(COR_CABECALHO);
         return label;
     }
@@ -145,9 +125,7 @@ public class PainelClientes extends JPanel implements Interface {
         JTableHeader header = tabelaHistorico.getTableHeader();
         header.setBackground(COR_CABECALHO);
         header.setForeground(Color.WHITE);
-        header.setFont(Fontes.get(12f));
 
-        tabelaHistorico.setFont(Fontes.get(12f));
         tabelaHistorico.setRowHeight(24);
         tabelaHistorico.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }

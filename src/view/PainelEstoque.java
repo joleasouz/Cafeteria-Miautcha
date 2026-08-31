@@ -1,8 +1,10 @@
 package view;
 
 import data.Conexao;
-import view.gerenciarFontes.Fontes;
-
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
@@ -10,10 +12,6 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.*;
 
 public class PainelEstoque extends JPanel implements Interface {
     private JTable tabela;
@@ -34,10 +32,7 @@ public class PainelEstoque extends JPanel implements Interface {
         painelFormulario.setPreferredSize(new Dimension(0, 120));
         painelFormulario.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(COR_CABECALHO, 1, true),
-                " Cadastrar Novo Produto ",
-                0, 0,
-                Fontes.get(13f),
-                COR_CABECALHO
+                " Cadastrar Novo Produto "
         ));
 
         txtNome = criarCampoTexto();
@@ -76,7 +71,7 @@ public class PainelEstoque extends JPanel implements Interface {
         JTableHeader header = tabela.getTableHeader();
         header.setFont(new Font("SansSerif", Font.BOLD, 13));
         header.setBackground(COR_CABECALHO);
-        header.setForeground(COR_TEXTO);
+        header.setForeground(Color.white);
         header.setPreferredSize(new Dimension(100, 32));
 
         // centralizar texto nas colunas
