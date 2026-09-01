@@ -9,17 +9,20 @@ public class Pedido{
     private LocalDateTime data;
     private StatusPedido status;
     private double valorTotal;
+    private int numeroMesa;
+
 
     private Cliente cliente;
     private List<ItemPedido> itens;
 
-    public Pedido(int id, Cliente cliente, LocalDateTime data, StatusPedido status, double valorTotal){
+    public Pedido(int id, Cliente cliente, LocalDateTime data, StatusPedido status, double valorTotal, int numeroMesa){
         this.id = id;
         this.cliente = cliente;
         this.data = data;
         this.status = status;
         this.itens = new ArrayList<>();
         this.valorTotal = valorTotal;
+        this.numeroMesa = numeroMesa;
     } 
 
     public void adicionarItem(ItemPedido item){
@@ -57,6 +60,10 @@ public class Pedido{
     public Cliente getCliente(){ return cliente; }
     public void setCliente(Cliente cliente){ 
         this.cliente = cliente; 
+    }
+    public int getNumeroMesa(){ return numeroMesa; }
+    public void setNumeroMesa(int numeroMesa){ 
+        this.numeroMesa = numeroMesa; 
     }
 
     public List<ItemPedido> getItens(){ return itens; }
