@@ -4,7 +4,6 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
 
 public class PainelClientes extends JPanel implements Interface {
 
@@ -20,14 +19,20 @@ public class PainelClientes extends JPanel implements Interface {
         setBackground(COR_FUNDO_PAINEL);
         setBorder(new EmptyBorder(15, 15, 15, 15));
 
-
-        JPanel painelEsquerda = new JPanel(new BorderLayout());
-        painelEsquerda.setBackground(COR_FUNDO_PAINEL);
+        JPanel painelEsquerda = Interface.paineis(new BorderLayout(), COR_FUNDO_PAINEL_ESCURO);
         painelEsquerda.setPreferredSize(new Dimension(220, 0));
-        painelEsquerda.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(COR_CABECALHO, 1, true),
-                " Clientes Cadastrados "
-        ));
+
+        // Título do painel esquerdo
+        JPanel painelTituloEsquerda = new JPanel(new BorderLayout());
+        painelTituloEsquerda.setBackground(COR_FUNDO_PAINEL_ESCURO);
+        
+        JLabel tituloEsquerda = new JLabel("Clientes");
+        tituloEsquerda.setFont(new Font("SansSerif", Font.BOLD, 14));
+        tituloEsquerda.setForeground(COR_TITULO);
+        tituloEsquerda.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        painelTituloEsquerda.add(tituloEsquerda, BorderLayout.CENTER);
+
+        painelEsquerda.add(painelTituloEsquerda, BorderLayout.NORTH);
 
         modeloListaClientes = new DefaultListModel<>();
         listaClientesEsquerda = new JList<>(modeloListaClientes);
@@ -43,14 +48,24 @@ public class PainelClientes extends JPanel implements Interface {
         JPanel painelCentral = new JPanel(new BorderLayout(0, 15));
         painelCentral.setBackground(COR_FUNDO_PAINEL);
 
+        // Painel do formulário com título
+        JPanel painelFormularioContainer = new JPanel(new BorderLayout());
+        painelFormularioContainer.setBackground(COR_FUNDO_PAINEL);
+
+        JPanel painelTituloFormulario = new JPanel(new BorderLayout());
+        painelTituloFormulario.setBackground(COR_FUNDO_PAINEL);
         
-        JPanel painelFormulario = new JPanel(new GridBagLayout());
-        painelFormulario.setBackground(COR_FUNDO_PAINEL);
+        JLabel tituloFormulario = new JLabel("Cadastrar Cliente");
+        tituloFormulario.setFont(new Font("SansSerif", Font.BOLD, 14));
+        tituloFormulario.setForeground(COR_TITULO);
+        tituloFormulario.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        painelTituloFormulario.add(tituloFormulario, BorderLayout.CENTER);
+
+        painelFormularioContainer.add(painelTituloFormulario, BorderLayout.NORTH);
+        
+        JPanel painelFormulario = Interface.paineis(new GridBagLayout(), COR_FUNDO_PAINEL_ESCURO);
         painelFormulario.setPreferredSize(new Dimension(0, 100));
-        painelFormulario.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(COR_CABECALHO, 1, true),
-                " Cadastrar Novo Cliente "
-        ));
+        painelFormularioContainer.add(painelFormulario, BorderLayout.CENTER);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
@@ -84,13 +99,25 @@ public class PainelClientes extends JPanel implements Interface {
         gbc.gridx = 4; gbc.gridy = 1; gbc.weightx = 0;
         painelFormulario.add(btnCadastrar, gbc);
 
-        painelCentral.add(painelFormulario, BorderLayout.NORTH);
-        JPanel painelTabela = new JPanel(new BorderLayout());
-        painelTabela.setBackground(COR_FUNDO_PAINEL);
-        painelTabela.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(COR_CABECALHO, 1, true),
-                " Histórico de Pedidos "
-        ));
+        painelCentral.add(painelFormularioContainer, BorderLayout.NORTH);
+        
+        // Painel da tabela com título
+        JPanel painelTabelaContainer = new JPanel(new BorderLayout());
+        painelTabelaContainer.setBackground(COR_FUNDO_PAINEL);
+
+        JPanel painelTituloTabela = new JPanel(new BorderLayout());
+        painelTituloTabela.setBackground(COR_FUNDO_PAINEL);
+        
+        JLabel tituloTabela = new JLabel("Histórico de Pedidos");
+        tituloTabela.setFont(new Font("SansSerif", Font.BOLD, 14));
+        tituloTabela.setForeground(COR_TITULO);
+        tituloTabela.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        painelTituloTabela.add(tituloTabela, BorderLayout.CENTER);
+
+        painelTabelaContainer.add(painelTituloTabela, BorderLayout.NORTH);
+        
+        JPanel painelTabela = Interface.paineis(new BorderLayout(), COR_FUNDO_PAINEL_ESCURO);
+        painelTabela.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         String[] colunas = {"ID Pedido", "Nome Cliente", "CPF", "Data", "Itens", "Total (R$)"};
         modeloTabelaHistorico = new DefaultTableModel(colunas, 0) {
@@ -108,7 +135,8 @@ public class PainelClientes extends JPanel implements Interface {
         scrollTabela.setBorder(BorderFactory.createEmptyBorder());
 
         painelTabela.add(scrollTabela, BorderLayout.CENTER);
-        painelCentral.add(painelTabela, BorderLayout.CENTER);
+        painelTabelaContainer.add(painelTabela, BorderLayout.CENTER);
+        painelCentral.add(painelTabelaContainer, BorderLayout.CENTER);
 
         add(painelCentral, BorderLayout.CENTER);
 
@@ -122,10 +150,7 @@ public class PainelClientes extends JPanel implements Interface {
     }
 
     private void estilizarTabela() {
-        JTableHeader header = tabelaHistorico.getTableHeader();
-        header.setBackground(COR_CABECALHO);
-        header.setForeground(Color.WHITE);
-
+        Interface.estilizarCabecalhoTabela(tabelaHistorico);
         tabelaHistorico.setRowHeight(24);
         tabelaHistorico.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }

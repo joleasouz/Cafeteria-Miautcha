@@ -14,6 +14,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
 public class PainelEstoque extends JPanel implements Interface {
+
     private JTable tabela;
     private DefaultTableModel modeloTabela;
     private JTextField txtNome, txtPreco, txtQuantidadeCad, txtPesquisa, txtAjusteQtd;
@@ -27,13 +28,8 @@ public class PainelEstoque extends JPanel implements Interface {
         setBorder(new EmptyBorder(15, 15, 15, 15));
 
         // painel superiror - cadastro de produtos
-        JPanel painelFormulario = new JPanel(new GridLayout(2, 4, 15, 10));
-        painelFormulario.setBackground(COR_FUNDO_PAINEL);
+        JPanel painelFormulario = Interface.paineis(new GridLayout(2, 4, 15, 10), COR_FUNDO_PAINEL_ESCURO);
         painelFormulario.setPreferredSize(new Dimension(0, 120));
-        painelFormulario.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(COR_CABECALHO, 1, true),
-                " Cadastrar Novo Produto "
-        ));
 
         txtNome = criarCampoTexto();
         txtPreco = criarCampoTexto();
@@ -42,7 +38,7 @@ public class PainelEstoque extends JPanel implements Interface {
         painelFormulario.add(criarRotulo("Nome do Produto:"));
         painelFormulario.add(criarRotulo("Preço (R$):"));
         painelFormulario.add(criarRotulo("Qtd Inicial:"));
-        painelFormulario.add(new JLabel("")); 
+        painelFormulario.add(new JLabel(""));
 
         painelFormulario.add(txtNome);
         painelFormulario.add(txtPreco);
@@ -92,15 +88,7 @@ public class PainelEstoque extends JPanel implements Interface {
         painelInferior.setBackground(COR_FUNDO_PAINEL);
 
         // subpainel de entrada e saida de estoque
-        JPanel painelAjuste = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 5));
-        painelAjuste.setBackground(COR_FUNDO_PAINEL);
-        painelAjuste.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(COR_CABECALHO, 1, true),
-                " Ajustar Estoque do Produto Selecionado ",
-                0, 0,
-                new Font("SansSerif", Font.BOLD, 12),
-                COR_CABECALHO
-        ));
+        JPanel painelAjuste = Interface.paineis(new FlowLayout(FlowLayout.LEFT, 12, 5), COR_FUNDO_PAINEL_ESCURO);
 
         txtAjusteQtd = criarCampoTexto();
         txtAjusteQtd.setPreferredSize(new Dimension(60, 28));
@@ -139,8 +127,7 @@ public class PainelEstoque extends JPanel implements Interface {
 
         add(painelInferior, BorderLayout.SOUTH);
 
-        // --- EVENTOS ---
-
+        // --- eventos ---
         btnCadastrar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -197,7 +184,6 @@ public class PainelEstoque extends JPanel implements Interface {
     }
 
     // estilizacao
-
     private JTextField criarCampoTexto() {
         JTextField campo = new JTextField();
         campo.setFont(new Font("SansSerif", Font.PLAIN, 12));
@@ -237,8 +223,7 @@ public class PainelEstoque extends JPanel implements Interface {
             }
 
             String sql = "INSERT INTO produto (nome, preco, quantidade) VALUES (?, ?, ?)";
-            try (Connection conn = Conexao.conectar();
-                 PreparedStatement stmt = conn.prepareStatement(sql)) {
+            try (Connection conn = Conexao.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setString(1, nome);
                 stmt.setDouble(2, preco);
                 stmt.setInt(3, quantidade);
@@ -255,6 +240,7 @@ public class PainelEstoque extends JPanel implements Interface {
             JOptionPane.showMessageDialog(this, "Erro no Banco de Dados: " + e.getMessage(), "Erro MySQL", JOptionPane.ERROR_MESSAGE);
         }
     }
+
     private void alterarEstoque(boolean aumentar) {
         if (idProdutoSelecionado == -1) {
             JOptionPane.showMessageDialog(this, "Selecione um produto na tabela primeiro!", "Aviso", JOptionPane.WARNING_MESSAGE);
@@ -274,13 +260,12 @@ public class PainelEstoque extends JPanel implements Interface {
                 return;
             }
 
-            String sql = aumentar 
-                ? "UPDATE produto SET quantidade = quantidade + ? WHERE id = ?"
-                : "UPDATE produto SET quantidade = quantidade - ? WHERE id = ? AND quantidade >= ?";
+            String sql = aumentar
+                    ? "UPDATE produto SET quantidade = quantidade + ? WHERE id = ?"
+                    : "UPDATE produto SET quantidade = quantidade - ? WHERE id = ? AND quantidade >= ?";
 
-            try (Connection conn = Conexao.conectar();
-                 PreparedStatement stmt = conn.prepareStatement(sql)) {
-                
+            try (Connection conn = Conexao.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+
                 stmt.setInt(1, valorAjuste);
                 stmt.setInt(2, idProdutoSelecionado);
                 if (!aumentar) {
@@ -312,8 +297,7 @@ public class PainelEstoque extends JPanel implements Interface {
         int confirmacao = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir o produto selecionado?", "Confirmação", JOptionPane.YES_NO_OPTION);
         if (confirmacao == JOptionPane.YES_OPTION) {
             String sql = "DELETE FROM produto WHERE id = ?";
-            try (Connection conn = Conexao.conectar();
-                 PreparedStatement stmt = conn.prepareStatement(sql)) {
+            try (Connection conn = Conexao.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setInt(1, idProdutoSelecionado);
                 stmt.executeUpdate();
                 JOptionPane.showMessageDialog(this, "Produto excluído com sucesso!");
@@ -333,8 +317,7 @@ public class PainelEstoque extends JPanel implements Interface {
         }
         sql += " ORDER BY id ASC";
 
-        try (Connection conn = Conexao.conectar();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = Conexao.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             if (!pesquisa.isEmpty()) {
                 stmt.setString(1, "%" + pesquisa + "%");

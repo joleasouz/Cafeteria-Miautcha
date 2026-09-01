@@ -119,13 +119,23 @@ public class Formulario extends JPanel implements Interface {
         JPanel painel = new JPanel(new BorderLayout());
         painel.setPreferredSize(new Dimension(320, 0));
         painel.setBackground(COR_FUNDO_PAINEL);
-        javax.swing.border.TitledBorder borda = BorderFactory.createTitledBorder("Cardápio");
-        borda.setTitleColor(COR_TITULO);
-        painel.setBorder(borda);
+
+        JPanel painelTitulo = new JPanel(new BorderLayout());
+        painelTitulo.setBackground(COR_FUNDO_PAINEL);
+        painelTitulo.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, COR_TITULO));
+        
+        JLabel titulo = new JLabel("Cardápio");
+        titulo.setFont(new Font("SansSerif", Font.BOLD, 14));
+        titulo.setForeground(COR_TITULO);
+        titulo.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        painelTitulo.add(titulo, BorderLayout.CENTER);
+
+        painel.add(painelTitulo, BorderLayout.NORTH);
 
         JPanel listaProdutos = new JPanel();
         listaProdutos.setBackground(COR_FUNDO_PAINEL);
         listaProdutos.setLayout(new BoxLayout(listaProdutos, BoxLayout.Y_AXIS));
+        listaProdutos.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
 
         for (ProdutoDemo produto : catalogo) {
             listaProdutos.add(criarLinhaProduto(produto));
@@ -134,19 +144,19 @@ public class Formulario extends JPanel implements Interface {
 
         JScrollPane scroll = new JScrollPane(listaProdutos);
         scroll.getVerticalScrollBar().setUnitIncrement(16);
+        scroll.setBorder(BorderFactory.createEmptyBorder());
         painel.add(scroll, BorderLayout.CENTER);
 
         return painel;
     }
 
     private JPanel criarLinhaProduto(ProdutoDemo produto) {
-        JPanel linha = new JPanel(new BorderLayout(10, 0));
+        JPanel linha = Interface.paineis(new BorderLayout(10, 0), COR_FUNDO_PAINEL_ESCURO);
         linha.setMaximumSize(new Dimension(Integer.MAX_VALUE, 65));
-        linha.setBackground(COR_FUNDO_PAINEL);
-        linha.setBorder(BorderFactory.createEtchedBorder());
 
         JPanel textos = new JPanel(new GridLayout(3, 1));
-        textos.setBackground(COR_FUNDO_PAINEL);
+        textos.setBackground(COR_FUNDO_PAINEL_ESCURO);
+        textos.setOpaque(false);
 
         JLabel lblNome = new JLabel(produto.nome);
         lblNome.setForeground(COR_TEXTO);
@@ -191,13 +201,26 @@ public class Formulario extends JPanel implements Interface {
     private JComponent criarPainelPedido() {
         JPanel painel = new JPanel(new BorderLayout(10, 10));
         painel.setBackground(COR_FUNDO_PAINEL);
-        javax.swing.border.TitledBorder borda = BorderFactory.createTitledBorder("Novo Pedido");
-        borda.setTitleColor(COR_TITULO);
-        painel.setBorder(borda);
 
-        painel.add(criarPainelCliente(), BorderLayout.NORTH);
-        painel.add(criarPainelTabelaItens(), BorderLayout.CENTER);
-        painel.add(criarPainelRodape(), BorderLayout.SOUTH);
+        JPanel painelTitulo = new JPanel(new BorderLayout());
+        painelTitulo.setBackground(COR_FUNDO_PAINEL);
+        painelTitulo.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, COR_TITULO));
+        
+        JLabel titulo = new JLabel("Novo Pedido");
+        titulo.setFont(new Font("SansSerif", Font.BOLD, 14));
+        titulo.setForeground(COR_TITULO);
+        titulo.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        painelTitulo.add(titulo, BorderLayout.CENTER);
+
+        painel.add(painelTitulo, BorderLayout.NORTH);
+
+        JPanel conteudo = new JPanel(new BorderLayout(10, 10));
+        conteudo.setBackground(COR_FUNDO_PAINEL);
+        conteudo.add(criarPainelCliente(), BorderLayout.NORTH);
+        conteudo.add(criarPainelTabelaItens(), BorderLayout.CENTER);
+        conteudo.add(criarPainelRodape(), BorderLayout.SOUTH);
+
+        painel.add(conteudo, BorderLayout.CENTER);
 
         return painel;
     }
@@ -235,6 +258,9 @@ public class Formulario extends JPanel implements Interface {
         tabelaItens = new JTable(modeloTabela);
         tabelaItens.setSelectionBackground(COR_SELECAO_TABELA);
         tabelaItens.setSelectionForeground(COR_TEXTO);
+        tabelaItens.setShowVerticalLines(false);
+
+        Interface.estilizarCabecalhoTabela(tabelaItens);
         return new JScrollPane(tabelaItens);
     }
 
