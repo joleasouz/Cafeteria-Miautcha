@@ -18,7 +18,7 @@
 
 ## Sobre o Projeto
 
-O **Miautcha System** é uma aplicação desktop desenvolvida em Java com interface gráfica em Swing. O projeto foi projetado para resolver falhas operacionais recorrentes do balcão de uma cafeteria, trazendo automação no cálculo dos pedidos, alertas visuais para falta de estoque e consultas rápidas ao histórico de compras dos clientes.
+O **Miautcha System** é uma aplicação desktop desenvolvida em Java com interface gráfica em Swing. O projeto foi pensado para resolver falhas operacionais recorrentes do balcão de uma cafeteria, trazendo automação no cálculo dos pedidos, alertas visuais para falta de estoque e consultas rápidas ao histórico de compras dos clientes.
 
 ---
 
@@ -30,7 +30,6 @@ O **Miautcha System** é uma aplicação desktop desenvolvida em Java com interf
 | **Dificuldade de cadastro e histórico de clientes** | **Barra de pesquisa por Nome e CPF** com visualização detalhada do histórico de compras ao clicar no cliente. |
 | **Erros frequentes no cálculo do valor total** | **Formulário de Pedido com soma automática** e atualização do total em tempo real conforme novos itens são adicionados. |
 | **Falta de controle de estoque e insumos** | **Painel de alertas dinâmico** com sinalização visual de estoque crítico e esgotado (*warnings* pop-up). |
-| **Perda de dados de funcionários** | Módulo de **armazenamento dos dados dos funcionários** para vínculo de cada atendimento. |
 
 ---
 
@@ -90,7 +89,7 @@ Para garantir um desenvolvimento paralelo, fluido e sem conflitos de código no 
 * **Interface Swing:** Screen de lançamento de novos pedidos com atualização instantânea do valor total.
 
 ### Larissa Peters — Arquitetura Central, Comanda e Navegação (`Interface.java`)
-* **Classes:** `Comanda.java`, `BancoDados.java` (Repositório em memória), `Main.java`
+* **Classes:**  `BancoDados.java` (Repositório em memória), `Main.java`
 * **Métodos Principais:** `Comanda.expandir()`, `Comanda.minimizar()`
 * **Interface Swing:** Janela principal (`JFrame`) utilizando `JTabbedPane` para unificar as telas de todos os integrantes em abas, além do cadastro inicial de dados de teste (*mock data*).
 
