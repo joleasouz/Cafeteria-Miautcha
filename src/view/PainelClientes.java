@@ -1,9 +1,14 @@
 package view;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+
+import data.dao.ClienteDAO;
+import model.Cliente;
 
 public class PainelClientes extends JPanel implements Interface {
 
@@ -13,8 +18,11 @@ public class PainelClientes extends JPanel implements Interface {
     private JTable tabelaHistorico;
     private DefaultTableModel modeloTabelaHistorico;
     private JButton btnCadastrar;
+    private ClienteDAO clienteDAO;
 
     public PainelClientes() {
+        clienteDAO = new ClienteDAO();
+
         setLayout(new BorderLayout(15, 15));
         setBackground(COR_FUNDO_PAINEL);
         setBorder(new EmptyBorder(15, 15, 15, 15));
@@ -43,7 +51,6 @@ public class PainelClientes extends JPanel implements Interface {
         painelEsquerda.add(scrollLista, BorderLayout.CENTER);
 
         add(painelEsquerda, BorderLayout.WEST);
-
 
         JPanel painelCentral = new JPanel(new BorderLayout(0, 15));
         painelCentral.setBackground(COR_FUNDO_PAINEL);
@@ -86,6 +93,7 @@ public class PainelClientes extends JPanel implements Interface {
         painelFormulario.add(criarRotulo("CPF:"), gbc);
         gbc.gridx = 3; gbc.gridy = 0; gbc.weightx = 1.0;
         painelFormulario.add(txtCpf, gbc);
+
         gbc.gridx = 0; gbc.gridy = 1; gbc.weightx = 0;
         painelFormulario.add(criarRotulo("Telefone:"), gbc);
         gbc.gridx = 1; gbc.gridy = 1; gbc.weightx = 1.0;
@@ -140,6 +148,15 @@ public class PainelClientes extends JPanel implements Interface {
 
         add(painelCentral, BorderLayout.CENTER);
 
+        btnCadastrar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cadastrarCliente();
+            }
+        });
+
+        carregarListaClientes();
+
         setVisible(true);
     }
 
@@ -153,5 +170,48 @@ public class PainelClientes extends JPanel implements Interface {
         Interface.estilizarCabecalhoTabela(tabelaHistorico);
         tabelaHistorico.setRowHeight(24);
         tabelaHistorico.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    }
+
+    private void cadastrarCliente() {
+        String nome = txtNome.getText().trim();
+        String cpf = txtCpf.getText().trim();
+        String telefone = txtTelefone.getText().trim();
+        String email = txtEmail.getText().trim();
+
+        if (nome.isEmpty() || cpf.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Preencha os campos obrigatórios (Nome e CPF).", "Aviso", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        Cliente cliente = new Cliente();
+        cliente.setNome(nome);
+        cliente.setCpf(cpf);
+        cliente.setTelefone(telefone);
+        cliente.setEmail(email);
+
+        boolean sucesso = clienteDAO.cadastrar(cliente);
+
+        if (sucesso) {
+            JOptionPane.showMessageDialog(this, "Cliente cadastrado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+            limparFormulario();
+            carregarListaClientes();
+        } else {
+            JOptionPane.showMessageDialog(this, "Erro ao cadastrar cliente no banco de dados.", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void carregarListaClientes() {
+        modeloListaClientes.clear();
+        for (Cliente c : clienteDAO.listar()) {
+            modeloListaClientes.addElement(c.getNome() + " (" + c.getCpf() + ")");
+        }
+    }
+
+    private void limparFormulario() {
+        txtNome.setText("");
+        txtCpf.setText("");
+        txtTelefone.setText("");
+        txtEmail.setText("");
+        txtNome.requestFocus();
     }
 }
