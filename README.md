@@ -90,7 +90,7 @@ Para garantir um desenvolvimento paralelo, fluido e sem conflitos de código no 
 * **Interface Swing:** Screen de lançamento de novos pedidos com atualização instantânea do valor total.
 
 ### Larissa Peters — Arquitetura Central, Comanda e Navegação (`Interface.java`)
-* **Classes:** `Comanda.java`, `BancoDados.java` (Repositório em memória), `Main.java`
+* **Classes:**  `BancoDados.java` (Repositório em memória), `Main.java`
 * **Métodos Principais:** `Comanda.expandir()`, `Comanda.minimizar()`
 * **Interface Swing:** Janela principal (`JFrame`) utilizando `JTabbedPane` para unificar as telas de todos os integrantes em abas, além do cadastro inicial de dados de teste (*mock data*).
 
