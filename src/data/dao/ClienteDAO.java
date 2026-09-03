@@ -27,7 +27,7 @@ public class ClienteDAO {
             return true;
 
         } catch (SQLException e) {
-            System.err.println("Erro ao cadastrar cliente: " + e.getMessage());
+            System.err.println("erro ao cadastrar cliente: " + e.getMessage());
             return false;
         }
     }
@@ -52,7 +52,7 @@ public class ClienteDAO {
             }
 
         } catch (SQLException e) {
-            System.err.println("Erro ao listar clientes: " + e.getMessage());
+            System.err.println("erro ao listar clientes: " + e.getMessage());
         }
 
         return clientes;
