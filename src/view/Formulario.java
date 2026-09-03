@@ -6,6 +6,9 @@ import java.util.function.Consumer;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
+import data.dao.ProdutoDAO;
+import model.Produto;
+
 public class Formulario extends JPanel implements Interface {
 
     private static class ProdutoDemo {
@@ -36,7 +39,7 @@ public class Formulario extends JPanel implements Interface {
         }
     }
 
-    private final List<ProdutoDemo> catalogo = criarCatalogoDemo();
+    private final List<Produto> catalogo = new ProdutoDAO().listar();
     private final List<String> clientesDemo = criarClientesDemo();
     private final List<ItemCarrinho> itensPedido = new ArrayList<>();
 

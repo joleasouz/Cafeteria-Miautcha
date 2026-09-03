@@ -96,6 +96,12 @@ Para garantir um desenvolvimento paralelo, fluido e sem conflitos de código no 
 
 ---
 
+## Diagrama de Classes
+
+[Diagrama de Classes (PDF)](./docs/DiagramaGatocafe.pdf)
+
+---
+
 ## Tecnologias Utilizadas
 
 * **Linguagem:** Java (JDK 17 ou superior)
