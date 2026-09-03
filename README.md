@@ -45,9 +45,8 @@ Miautcha/
 │   └── model/                     # Módulos de Dados (Diagrama)
 │       │   ├── Cliente.java           # [Vitoria Brenda] id, nome, cpf, email, telefone
 │       │   ├── Produto.java           # [Maria Eduarda] id, nomeProduto, categoria, preco, quantidadeEmEstoque
-│       │   ├── Pedido.java            # [Julia Silva] id, data, status, valorTotal
+│       │   ├── Pedido.java            # [Julia Silva, Larissa Peters] id, data, status, valorTotal, numeroMesa
 │       │   ├── ItemPedido.java        # [Julia Silva] id, quantidade, precoUnitario
-│       │   ├── Comanda.java           # [Larissa Peters] id, mesa, status
 │       │   └── StatusPedido.java      # [Larissa Peters] Enum (ex: PENDENTE, FINALIZADO, CANCELADO)
 │       │
 │       ├── data/                      # Persistência e Acesso a Dados
