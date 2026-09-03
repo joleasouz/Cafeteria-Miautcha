@@ -1,27 +1,27 @@
 package data.dao;
 
+import data.Conexao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import data.Conexao;
 import model.Cliente;
-
+/*---Jolea
+        mudei só de cliente pra clientes na linha 17 pra ficar igual no banco */
 public class ClienteDAO {
 
     public boolean cadastrar(Cliente cliente) {
-        String sql = "INSERT INTO cliente (nome, cpf, telefone, email) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO clientes (nome, cpf, email, telefone) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, cliente.getNome());
             stmt.setString(2, cliente.getCpf());
-            stmt.setString(3, cliente.getTelefone());
-            stmt.setString(4, cliente.getEmail());
+            stmt.setString(3, cliente.getEmail());
+            stmt.setString(4, cliente.getTelefone());
 
             stmt.executeUpdate();
             return true;
@@ -34,7 +34,7 @@ public class ClienteDAO {
 
     public List<Cliente> listar() {
         List<Cliente> clientes = new ArrayList<>();
-        String sql = "SELECT id, nome, cpf, telefone, email FROM cliente";
+        String sql = "SELECT id, nome, cpf, email, telefone FROM clientes";
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql);
