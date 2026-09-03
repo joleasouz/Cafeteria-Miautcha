@@ -82,7 +82,8 @@ public class PainelClientes extends JPanel implements Interface {
         txtCpf = new JTextField();
         txtTelefone = new JTextField();
         txtEmail = new JTextField();
-        btnCadastrar = new JButton("Cadastrar");
+        btnCadastrar = new JButton();
+        btnCadastrar = Interface.botaoArredondado("Cadastrar", COR_BOTAO_PRIMARIO);
 
         gbc.gridx = 0; gbc.gridy = 0; gbc.weightx = 0;
         painelFormulario.add(criarRotulo("Nome:"), gbc);

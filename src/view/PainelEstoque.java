@@ -17,7 +17,7 @@ public class PainelEstoque extends JPanel implements Interface {
 
     private JTable tabela;
     private DefaultTableModel modeloTabela;
-    private JTextField txtNome, txtPreco, txtQuantidadeCad, txtPesquisa, txtAjusteQtd;
+    private JTextField txtNome, txtPreco, txtQtd, txtPesquisa, txtAjusteQtd;
     private JButton btnCadastrar, btnExcluir, btnPesquisar, btnAtualizar, btnAdicionarEstoque, btnRemoverEstoque;
     private JLabel lblStatusEstoque;
     private int idProdutoSelecionado = -1;
@@ -28,27 +28,16 @@ public class PainelEstoque extends JPanel implements Interface {
         setBorder(new EmptyBorder(15, 15, 15, 15));
 
         // painel superiror - cadastro de produtos
-        JPanel painelFormulario = Interface.paineis(new GridLayout(2, 4, 15, 10), COR_FUNDO_PAINEL_ESCURO);
-        painelFormulario.setPreferredSize(new Dimension(0, 120));
+        txtNome = Interface.comTamanho(Interface.CampoDados("Nome do Produto"), 400, 50);
+        txtPreco = Interface.comTamanho(Interface.CampoDados("Preço (R$)"), 400, 50);
+        txtQtd = Interface.comTamanho(Interface.CampoDados("Qtd Inicial"), 400, 50);
+        btnCadastrar = Interface.comTamanho(Interface.botaoArredondado("Cadastrar Produto", COR_BOTAO_PRIMARIO), 200, 50);
 
-        txtNome = criarCampoTexto();
-        txtPreco = criarCampoTexto();
-        txtQuantidadeCad = criarCampoTexto();
-        btnCadastrar = Interface.botaoArredondado("Cadastrar Produto", COR_BOTAO_PRIMARIO);
-        painelFormulario.add(criarRotulo("Nome do Produto:"));
-        painelFormulario.add(criarRotulo("Preço (R$):"));
-        painelFormulario.add(criarRotulo("Qtd Inicial:"));
-        painelFormulario.add(new JLabel(""));
-
-        painelFormulario.add(txtNome);
-        painelFormulario.add(txtPreco);
-        painelFormulario.add(txtQuantidadeCad);
-        painelFormulario.add(btnCadastrar);
-
+        JPanel painelFormulario = Interface.criarPainelFormulario(110, txtNome, txtPreco, txtQtd, btnCadastrar);
         add(painelFormulario, BorderLayout.NORTH);
 
         // painel central - tabela de produtos
-        modeloTabela = new DefaultTableModel(new Object[]{"ID", "Nome", "Preço (R$)", "Qtd Estoque", "Status"}, 0) {
+        modeloTabela = new DefaultTableModel(new Object[] { "ID", "Nome", "Preço (R$)", "Qtd Estoque", "Status" }, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -189,8 +178,7 @@ public class PainelEstoque extends JPanel implements Interface {
         campo.setFont(new Font("SansSerif", Font.PLAIN, 12));
         campo.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(180, 180, 180), 1, true),
-                BorderFactory.createEmptyBorder(4, 6, 4, 6)
-        ));
+                BorderFactory.createEmptyBorder(4, 6, 4, 6)));
         return campo;
     }
 
@@ -206,10 +194,11 @@ public class PainelEstoque extends JPanel implements Interface {
     private void cadastrarProduto() {
         String nome = txtNome.getText().trim();
         String precoStr = txtPreco.getText().trim().replace(",", ".");
-        String qtdStr = txtQuantidadeCad.getText().trim();
+        String qtdStr = txtQtd.getText().trim();
 
         if (nome.isEmpty() || precoStr.isEmpty() || qtdStr.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Preencha todos os campos para o novo produto!", "Aviso", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Preencha todos os campos para o novo produto!", "Aviso",
+                    JOptionPane.WARNING_MESSAGE);
             return;
         }
 
@@ -218,7 +207,8 @@ public class PainelEstoque extends JPanel implements Interface {
             int quantidade = Integer.parseInt(qtdStr);
 
             if (quantidade < 0) {
-                JOptionPane.showMessageDialog(this, "A quantidade inicial não pode ser negativa!", "Erro", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "A quantidade inicial não pode ser negativa!", "Erro",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -235,28 +225,34 @@ public class PainelEstoque extends JPanel implements Interface {
             carregarTabela("");
 
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Insira valores válidos para Preço e Quantidade!", "Erro de Entrada", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Insira valores válidos para Preço e Quantidade!", "Erro de Entrada",
+                    JOptionPane.ERROR_MESSAGE);
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Erro no Banco de Dados: " + e.getMessage(), "Erro MySQL", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Erro no Banco de Dados: " + e.getMessage(), "Erro MySQL",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void alterarEstoque(boolean aumentar) {
         if (idProdutoSelecionado == -1) {
-            JOptionPane.showMessageDialog(this, "Selecione um produto na tabela primeiro!", "Aviso", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Selecione um produto na tabela primeiro!", "Aviso",
+                    JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         String qtdStr = txtAjusteQtd.getText().trim();
         if (qtdStr.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Informe a quantidade a ser " + (aumentar ? "adicionada" : "removida") + "!", "Aviso", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this,
+                    "Informe a quantidade a ser " + (aumentar ? "adicionada" : "removida") + "!", "Aviso",
+                    JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         try {
             int valorAjuste = Integer.parseInt(qtdStr);
             if (valorAjuste <= 0) {
-                JOptionPane.showMessageDialog(this, "O valor de ajuste deve ser maior que zero!", "Aviso", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, "O valor de ajuste deve ser maior que zero!", "Aviso",
+                        JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
@@ -274,27 +270,34 @@ public class PainelEstoque extends JPanel implements Interface {
 
                 int linhasAfetadas = stmt.executeUpdate();
                 if (linhasAfetadas > 0) {
-                    JOptionPane.showMessageDialog(this, "Estoque " + (aumentar ? "atualizado (+)" : "reduzido (-)") + " com sucesso!");
+                    JOptionPane.showMessageDialog(this,
+                            "Estoque " + (aumentar ? "atualizado (+)" : "reduzido (-)") + " com sucesso!");
                     txtAjusteQtd.setText("");
                     carregarTabela("");
                 } else {
-                    JOptionPane.showMessageDialog(this, "Não foi possível dar baixa. Quantidade em estoque é insuficiente!", "Erro de Estoque", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this,
+                            "Não foi possível dar baixa. Quantidade em estoque é insuficiente!", "Erro de Estoque",
+                            JOptionPane.ERROR_MESSAGE);
                 }
             }
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Informe apenas números inteiros para o ajuste!", "Erro", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Informe apenas números inteiros para o ajuste!", "Erro",
+                    JOptionPane.ERROR_MESSAGE);
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Erro ao atualizar banco: " + e.getMessage(), "Erro MySQL", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Erro ao atualizar banco: " + e.getMessage(), "Erro MySQL",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void excluirProduto() {
         if (idProdutoSelecionado == -1) {
-            JOptionPane.showMessageDialog(this, "Selecione um produto na tabela para excluir.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Selecione um produto na tabela para excluir.", "Aviso",
+                    JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        int confirmacao = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir o produto selecionado?", "Confirmação", JOptionPane.YES_NO_OPTION);
+        int confirmacao = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir o produto selecionado?",
+                "Confirmação", JOptionPane.YES_NO_OPTION);
         if (confirmacao == JOptionPane.YES_OPTION) {
             String sql = "DELETE FROM produto WHERE id = ?";
             try (Connection conn = Conexao.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -304,7 +307,8 @@ public class PainelEstoque extends JPanel implements Interface {
                 limparCampos();
                 carregarTabela("");
             } catch (SQLException e) {
-                JOptionPane.showMessageDialog(this, "Não é possível excluir produtos vinculados a vendas registradas!", "Erro MySQL", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Não é possível excluir produtos vinculados a vendas registradas!",
+                        "Erro MySQL", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -339,7 +343,7 @@ public class PainelEstoque extends JPanel implements Interface {
                     status = "DISPONÍVEL";
                 }
 
-                modeloTabela.addRow(new Object[]{id, nome, String.format("%.2f", preco), qtd, status});
+                modeloTabela.addRow(new Object[] { id, nome, String.format("%.2f", preco), qtd, status });
             }
         } catch (SQLException e) {
             // silencioso caso a conexão inicial ainda não esteja configurada
@@ -368,7 +372,7 @@ public class PainelEstoque extends JPanel implements Interface {
     private void limparCampos() {
         txtNome.setText("");
         txtPreco.setText("");
-        txtQuantidadeCad.setText("");
+        txtQtd.setText("");
         txtAjusteQtd.setText("");
         txtPesquisa.setText("");
         idProdutoSelecionado = -1;
