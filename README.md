@@ -75,15 +75,15 @@ Miautcha/
 * **Atendimento e Comandas:** Cria pedidos por mesa, calcula o total em tempo real e permite mudar o status do pedido (*Pendente*, *Finalizado*, *Cancelado*).
 * **Controle de Estoque:** Cadastra produtos e dá **alertas visuais** quando um item está acabando ou esgotado.
 * **Cadastro de Clientes:** Busca rápida por **Nome ou CPF** e exibe o histórico de compras do cliente.
-* **Dados:** Salva as informações em banco de dados **MySQL** ou em memória (para testes rápidos).
+* **Dados:** Salva as informações em banco de dados **MySQL** ou em memória.
 
 ---
 
 ### O que o sistema NÃO FAZ (Fora do Escopo)
 
 * **Pagamentos:** Não conecta com maquininha de cartão ou PIX automático (apenas registra o valor do pedido).
-* **Nota Fiscal:** Não emite cupom ou nota fiscal eletrônica (NFC-e).
-* **Delivery:** Não possui integração com iFood ou pedidos online (foco exclusivo no balcão/mesa).
+* **Nota Fiscal:** Não emite cupom ou nota fiscal eletrônic0.
+* **Delivery:** Não possui integração com iFood ou pedidos online.
 * **Login/Sistemas de Permissão:** Não possui restrições por senha ou níveis de acesso de usuário.
 ---
 
