@@ -1,13 +1,12 @@
 package view;
 
-import javax.swing.border.Border;
-import javax.swing.border.MatteBorder;
-import javax.swing.table.JTableHeader;
-import javax.swing.*;
-import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.MatteBorder;
+import javax.swing.table.JTableHeader;
 
 public interface Interface {
 
@@ -73,7 +72,7 @@ public interface Interface {
         header.setPreferredSize(new Dimension(100, 32));
     }
 
-   public static JTextField CampoDados(String dica) {
+    static JTextField CampoDados(String dica) {
         JTextField campo = new JTextField(dica);
 
         campo.setForeground(Color.GRAY);
