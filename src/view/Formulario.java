@@ -140,7 +140,7 @@ public class Formulario extends JPanel implements Interface {
         listaProdutos.setLayout(new BoxLayout(listaProdutos, BoxLayout.Y_AXIS));
         listaProdutos.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
 
-        for (ProdutoDemo produto : catalogo) {
+        for (Produto produto : catalogo) {
             listaProdutos.add(criarLinhaProduto(produto));
             listaProdutos.add(Box.createRigidArea(new Dimension(0, 6)));
         }

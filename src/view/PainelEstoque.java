@@ -1,29 +1,24 @@
 package view;
 
-import data.Conexao;
 import data.dao.ProdutoDAO;
-import model.Produto;
-
 import java.awt.*;
-import java.util.List;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.*;
+import java.util.List;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import model.Produto;
 
-public class PainelEstoque extends JPanel implements Interface {
+public final class PainelEstoque extends JPanel implements Interface {
 
-    private JTable tabela;
-    private DefaultTableModel modeloTabela;
-    private JTextField txtNome, txtPreco, txtQtd, txtPesquisa, txtAjusteQtd;
-    private JButton btnCadastrar, btnExcluir, btnPesquisar, btnAtualizar, btnAdicionarEstoque, btnRemoverEstoque;
-    private JLabel lblStatusEstoque;
+    private final JTable tabela;
+    private final DefaultTableModel modeloTabela;
+    private final JTextField txtNome, txtPreco, txtQtd, txtPesquisa, txtAjusteQtd;
+    private final JButton btnCadastrar, btnExcluir, btnPesquisar, btnAtualizar, btnAdicionarEstoque, btnRemoverEstoque;
+    private final JLabel lblStatusEstoque;
     private int idProdutoSelecionado = -1;
 
     private ProdutoDAO produtoDAO = new ProdutoDAO();
@@ -123,55 +118,34 @@ public class PainelEstoque extends JPanel implements Interface {
         add(painelInferior, BorderLayout.SOUTH);
 
         // --- eventos ---
-        btnCadastrar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                cadastrarProduto();
-            }
+        btnCadastrar.addActionListener((ActionEvent e) -> {
+            cadastrarProduto();
         });
 
-        btnAdicionarEstoque.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                alterarEstoque(true);
-            }
+        btnAdicionarEstoque.addActionListener((ActionEvent e) -> {
+            alterarEstoque(true);
         });
 
-        btnRemoverEstoque.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                alterarEstoque(false);
-            }
+        btnRemoverEstoque.addActionListener((ActionEvent e) -> {
+            alterarEstoque(false);
         });
 
-        btnAtualizar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                carregarTabela("");
-                limparCampos();
-            }
+        btnAtualizar.addActionListener((ActionEvent e) -> {
+            carregarTabela("");
+            limparCampos();
         });
 
-        btnPesquisar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                carregarTabela(txtPesquisa.getText().trim());
-            }
+        btnPesquisar.addActionListener((ActionEvent e) -> {
+            carregarTabela(txtPesquisa.getText().trim());
         });
 
-        btnExcluir.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                excluirProduto();
-            }
+        btnExcluir.addActionListener((ActionEvent e) -> {
+            excluirProduto();
         });
 
-        tabela.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    selecionarLinhaTabela();
-                }
+        tabela.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
+            if (!e.getValueIsAdjusting()) {
+                selecionarLinhaTabela();
             }
         });
 
@@ -211,35 +185,6 @@ public class PainelEstoque extends JPanel implements Interface {
         double preco;
         int quantidade;
         try {
-<<<<<<< HEAD
-            double preco = Double.parseDouble(precoStr);
-            int quantidade = Integer.parseInt(qtdStr);
-
-            if (quantidade < 0) {
-                JOptionPane.showMessageDialog(this, "A quantidade inicial não pode ser negativa!", "Erro",
-                        JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            String sql = "INSERT INTO produto (nome, preco, quantidade) VALUES (?, ?, ?)";
-            try (Connection conn = Conexao.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-                stmt.setString(1, nome);
-                stmt.setDouble(2, preco);
-                stmt.setInt(3, quantidade);
-                stmt.executeUpdate();
-                JOptionPane.showMessageDialog(this, "Produto cadastrado com sucesso!");
-            }
-
-            limparCampos();
-            carregarTabela("");
-
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Insira valores válidos para Preço e Quantidade!", "Erro de Entrada",
-                    JOptionPane.ERROR_MESSAGE);
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Erro no Banco de Dados: " + e.getMessage(), "Erro MySQL",
-                    JOptionPane.ERROR_MESSAGE);
-=======
             preco = Double.parseDouble(precoStr);
             quantidade = Integer.parseInt(qtdStr);
         } catch (NumberFormatException e) {
@@ -260,7 +205,6 @@ public class PainelEstoque extends JPanel implements Interface {
             carregarTabela("");
         } else {
             JOptionPane.showMessageDialog(this, "Erro no Banco de Dados ao cadastrar produto.", "Erro MySQL", JOptionPane.ERROR_MESSAGE);
->>>>>>> b9c103076c2e510ba6abedcff58a6ff21fd74fb7
         }
     }
 
@@ -281,45 +225,6 @@ public class PainelEstoque extends JPanel implements Interface {
 
         int valorAjuste;
         try {
-<<<<<<< HEAD
-            int valorAjuste = Integer.parseInt(qtdStr);
-            if (valorAjuste <= 0) {
-                JOptionPane.showMessageDialog(this, "O valor de ajuste deve ser maior que zero!", "Aviso",
-                        JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            String sql = aumentar
-                    ? "UPDATE produto SET quantidade = quantidade + ? WHERE id = ?"
-                    : "UPDATE produto SET quantidade = quantidade - ? WHERE id = ? AND quantidade >= ?";
-
-            try (Connection conn = Conexao.conectar(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-                stmt.setInt(1, valorAjuste);
-                stmt.setInt(2, idProdutoSelecionado);
-                if (!aumentar) {
-                    stmt.setInt(3, valorAjuste);
-                }
-
-                int linhasAfetadas = stmt.executeUpdate();
-                if (linhasAfetadas > 0) {
-                    JOptionPane.showMessageDialog(this,
-                            "Estoque " + (aumentar ? "atualizado (+)" : "reduzido (-)") + " com sucesso!");
-                    txtAjusteQtd.setText("");
-                    carregarTabela("");
-                } else {
-                    JOptionPane.showMessageDialog(this,
-                            "Não foi possível dar baixa. Quantidade em estoque é insuficiente!", "Erro de Estoque",
-                            JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Informe apenas números inteiros para o ajuste!", "Erro",
-                    JOptionPane.ERROR_MESSAGE);
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Erro ao atualizar banco: " + e.getMessage(), "Erro MySQL",
-                    JOptionPane.ERROR_MESSAGE);
-=======
             valorAjuste = Integer.parseInt(qtdStr);
         } catch (NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Informe apenas números inteiros para o ajuste!", "Erro", JOptionPane.ERROR_MESSAGE);
@@ -341,7 +246,6 @@ public class PainelEstoque extends JPanel implements Interface {
             JOptionPane.showMessageDialog(this,
                     aumentar ? "Erro ao atualizar o estoque no banco." : "Não foi possível dar baixa. Quantidade em estoque é insuficiente!",
                     aumentar ? "Erro MySQL" : "Erro de Estoque", JOptionPane.ERROR_MESSAGE);
->>>>>>> b9c103076c2e510ba6abedcff58a6ff21fd74fb7
         }
     }
 
@@ -361,14 +265,8 @@ public class PainelEstoque extends JPanel implements Interface {
                 JOptionPane.showMessageDialog(this, "Produto excluído com sucesso!");
                 limparCampos();
                 carregarTabela("");
-<<<<<<< HEAD
-            } catch (SQLException e) {
-                JOptionPane.showMessageDialog(this, "Não é possível excluir produtos vinculados a vendas registradas!",
-                        "Erro MySQL", JOptionPane.ERROR_MESSAGE);
-=======
             } else {
                 JOptionPane.showMessageDialog(this, "Não é possível excluir produtos vinculados a vendas registradas!", "Erro MySQL", JOptionPane.ERROR_MESSAGE);
->>>>>>> b9c103076c2e510ba6abedcff58a6ff21fd74fb7
             }
         }
     }
@@ -387,28 +285,6 @@ public class PainelEstoque extends JPanel implements Interface {
                 status = "DISPONÍVEL";
             }
 
-<<<<<<< HEAD
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                int id = rs.getInt("id");
-                String nome = rs.getString("nome");
-                double preco = rs.getDouble("preco");
-                int qtd = rs.getInt("quantidade");
-
-                String status;
-                if (qtd == 0) {
-                    status = "SEM ESTOQUE";
-                } else if (qtd <= 5) {
-                    status = "ESTOQUE BAIXO";
-                } else {
-                    status = "DISPONÍVEL";
-                }
-
-                modeloTabela.addRow(new Object[] { id, nome, String.format("%.2f", preco), qtd, status });
-            }
-        } catch (SQLException e) {
-            // silencioso caso a conexão inicial ainda não esteja configurada
-=======
             modeloTabela.addRow(new Object[]{
                     p.getId(),
                     p.getNome(),
@@ -416,7 +292,6 @@ public class PainelEstoque extends JPanel implements Interface {
                     p.getQntdEstoque(),
                     status
             });
->>>>>>> b9c103076c2e510ba6abedcff58a6ff21fd74fb7
         }
     }
 
