@@ -4,7 +4,8 @@ public enum StatusPedido {
     PENDENTE,
     PREPARANDO,
     PRONTO,
-    ENVIADO;
+    ENVIADO,
+    CANCELADO;
 
     public static StatusPedido pendente() {
         return PENDENTE;
@@ -21,12 +22,20 @@ public enum StatusPedido {
     public static StatusPedido enviado() {
         return ENVIADO;
     }
+
+    public static StatusPedido cancelado() {
+        return CANCELADO;
+    }
+
+    public String exibicao() {
+        switch (this) {
+            case PENDENTE: return "Pendente";
+            case PREPARANDO: return "Preparando";
+            case PRONTO: return "Pronto";
+            case ENVIADO: return "Enviado";
+            case CANCELADO: return "Cancelado";
+            default: return name();
+        }
+    }
 }
 
-
-//forma de usar o enum. Obs:get e set no arquivo q for usar o enum
-/* StatusPedido StatusPedido = StatusPedido.preparando();
-
-if (StatusPedido == StatusPedido.PREPARANDO) {
-    bglgenericodemonstracao();
-} */
