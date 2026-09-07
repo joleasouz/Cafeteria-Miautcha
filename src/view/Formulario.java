@@ -1,57 +1,41 @@
 package view;
+
+import data.dao.ClienteDAO;
+import data.dao.PedidoDAO;
+import data.dao.ProdutoDAO;
 import java.awt.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-
-import data.dao.ProdutoDAO;
+import model.Cliente;
+import model.ItemPedido;
+import model.Pedido;
 import model.Produto;
+import model.StatusPedido;
 
 public class Formulario extends JPanel implements Interface {
 
-    private static class ProdutoDemo {
-        String nome;
-        double preco;
-        int estoque;
-
-        ProdutoDemo(String nome, double preco, int estoque) {
-            this.nome = nome;
-            this.preco = preco;
-            this.estoque = estoque;
-        }
-    }
-
-    private static class ItemCarrinho {
-        ProdutoDemo produto;
-        int quantidade;
-        double precoUnitario;
-
-        ItemCarrinho(ProdutoDemo produto, int quantidade, double precoUnitario) {
-            this.produto = produto;
-            this.quantidade = quantidade;
-            this.precoUnitario = precoUnitario;
-        }
-
-        double calcularSubtotal() {
-            return quantidade * precoUnitario;
-        }
-    }
-
-    private final List<Produto> catalogo = new ProdutoDAO().listar();
-    private final List<String> clientesDemo = criarClientesDemo();
-    private final List<ItemCarrinho> itensPedido = new ArrayList<>();
+    private final ProdutoDAO produtoDAO = new ProdutoDAO();
+    private final ClienteDAO clienteDAO = new ClienteDAO();
+    private final PedidoDAO pedidoDAO = new PedidoDAO();
+    private final List<Produto> catalogo = produtoDAO.listar();
+    private final List<ItemPedido> itensPedido = new ArrayList<>();
 
     private DefaultTableModel modeloTabela;
     private JTable tabelaItens;
     private JLabel lblTotal;
     private JTextField txtCpf;
+    private JTextField txtMesa;
     private JLabel lblClienteEncontrado;
-    private String clienteSelecionado;
+    private Cliente clienteSelecionado;
 
-    private final java.util.Map<ProdutoDemo, JLabel> labelsEstoque = new java.util.HashMap<>();
-    private final java.util.Map<ProdutoDemo, JButton> botoesAdicionar = new java.util.HashMap<>();
+    private final Map<Produto, JLabel> labelsEstoque = new HashMap<>();
+    private final Map<Produto, JButton> botoesAdicionar = new HashMap<>();
 
     private final Consumer<String> aoNavegar;
 
@@ -66,26 +50,6 @@ public class Formulario extends JPanel implements Interface {
         setBackground(COR_FUNDO_PAINEL);
         add(criarCabecalho(), BorderLayout.NORTH);
         add(criarCorpo(), BorderLayout.CENTER);
-    }
-
-    /*   --- Jolea
-                Dados de teste com os arraylist que nem eu comentei no grupo
-            
-        --- Doda
-                fiz o arquivo de produtos com base nessas entradas*/
-    private static List<ProdutoDemo> criarCatalogoDemo() {
-        List<ProdutoDemo> lista = new ArrayList<>();
-        lista.add(new ProdutoDemo("Miautcha", 20.90, 100));
-        lista.add(new ProdutoDemo("Nyan Coffee", 16.90, 100));
-        lista.add(new ProdutoDemo("Cattuccino", 17.90, 50));
-        lista.add(new ProdutoDemo("Neko Latte", 16.90, 30));
-        return lista;
-    }
-
-    private static List<String> criarClientesDemo() {
-        List<String> lista = new ArrayList<>();
-        lista.add("Maria Silva - 111.111.111-11");
-        return lista;
     }
 
     private JComponent criarCabecalho() {
@@ -126,7 +90,7 @@ public class Formulario extends JPanel implements Interface {
         JPanel painelTitulo = new JPanel(new BorderLayout());
         painelTitulo.setBackground(COR_FUNDO_PAINEL);
         painelTitulo.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, COR_TITULO));
-        
+
         JLabel titulo = new JLabel("Cardápio");
         titulo.setFont(new Font("SansSerif", Font.BOLD, 14));
         titulo.setForeground(COR_TITULO);
@@ -140,7 +104,7 @@ public class Formulario extends JPanel implements Interface {
         listaProdutos.setLayout(new BoxLayout(listaProdutos, BoxLayout.Y_AXIS));
         listaProdutos.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
 
-        for (ProdutoDemo produto : catalogo) {
+        for (Produto produto : catalogo) {
             listaProdutos.add(criarLinhaProduto(produto));
             listaProdutos.add(Box.createRigidArea(new Dimension(0, 6)));
         }
@@ -153,7 +117,7 @@ public class Formulario extends JPanel implements Interface {
         return painel;
     }
 
-    private JPanel criarLinhaProduto(ProdutoDemo produto) {
+    private JPanel criarLinhaProduto(Produto produto) {
         JPanel linha = Interface.paineis(new BorderLayout(10, 0), COR_FUNDO_PAINEL_ESCURO);
         linha.setMaximumSize(new Dimension(Integer.MAX_VALUE, 65));
 
@@ -161,11 +125,11 @@ public class Formulario extends JPanel implements Interface {
         textos.setBackground(COR_FUNDO_PAINEL_ESCURO);
         textos.setOpaque(false);
 
-        JLabel lblNome = new JLabel(produto.nome);
+        JLabel lblNome = new JLabel(produto.getNome());
         lblNome.setForeground(COR_TEXTO);
         textos.add(lblNome);
 
-        JLabel lblPreco = new JLabel(String.format("R$ %.2f", produto.preco));
+        JLabel lblPreco = new JLabel(String.format("R$ %.2f", produto.getValor()));
         lblPreco.setForeground(COR_TEXTO);
         textos.add(lblPreco);
 
@@ -185,16 +149,16 @@ public class Formulario extends JPanel implements Interface {
         return linha;
     }
 
-    private void atualizarLinhaProduto(ProdutoDemo produto) {
+    private void atualizarLinhaProduto(Produto produto) {
         JLabel lblEstoque = labelsEstoque.get(produto);
         JButton btnAdicionar = botoesAdicionar.get(produto);
 
-        if (produto.estoque <= 0) {
+        if (produto.getQntdEstoque() <= 0) {
             lblEstoque.setText("Esgotado");
             lblEstoque.setForeground(COR_BOTAO_VERMELHO);
             btnAdicionar.setEnabled(false);
         } else {
-            lblEstoque.setText("Estoque: " + produto.estoque);
+            lblEstoque.setText("Estoque: " + produto.getQntdEstoque());
             lblEstoque.setForeground(COR_TEXTO);
             btnAdicionar.setEnabled(true);
         }
@@ -208,7 +172,7 @@ public class Formulario extends JPanel implements Interface {
         JPanel painelTitulo = new JPanel(new BorderLayout());
         painelTitulo.setBackground(COR_FUNDO_PAINEL);
         painelTitulo.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, COR_TITULO));
-        
+
         JLabel titulo = new JLabel("Novo Pedido");
         titulo.setFont(new Font("SansSerif", Font.BOLD, 14));
         titulo.setForeground(COR_TITULO);
@@ -246,6 +210,13 @@ public class Formulario extends JPanel implements Interface {
         lblClienteEncontrado = new JLabel("Nenhum cliente selecionado");
         lblClienteEncontrado.setForeground(COR_TEXTO);
         painel.add(lblClienteEncontrado);
+
+        JLabel lblMesa = new JLabel("  Mesa:");
+        lblMesa.setForeground(COR_TEXTO);
+        painel.add(lblMesa);
+
+        txtMesa = new JTextField(4);
+        painel.add(txtMesa);
 
         return painel;
     }
@@ -296,11 +267,9 @@ public class Formulario extends JPanel implements Interface {
         return painel;
     }
 
-
-
-    private void adicionarItemAoPedido(ProdutoDemo produto) {
+    private void adicionarItemAoPedido(Produto produto) {
         String qtdStr = JOptionPane.showInputDialog(this,
-                "Quantidade de " + produto.nome + " (estoque: " + produto.estoque + "):", "1");
+                "Quantidade de " + produto.getNome() + " (estoque: " + produto.getQntdEstoque() + "):", "1");
         if (qtdStr == null) return;
 
         int quantidade;
@@ -312,23 +281,23 @@ public class Formulario extends JPanel implements Interface {
             return;
         }
 
-        if (quantidade > produto.estoque) {
+        if (quantidade > produto.getQntdEstoque()) {
             JOptionPane.showMessageDialog(this,
-                    "Estoque insuficiente. Disponível: " + produto.estoque,
+                    "Estoque insuficiente. Disponível: " + produto.getQntdEstoque(),
                     "Estoque insuficiente", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        produto.estoque -= quantidade;
+        produto.setQntdEstoque(produto.getQntdEstoque() - quantidade);
         atualizarLinhaProduto(produto);
 
-        ItemCarrinho item = new ItemCarrinho(produto, quantidade, produto.preco);
+        ItemPedido item = new ItemPedido(0, produto, quantidade, produto.getValor());
         itensPedido.add(item);
 
         modeloTabela.addRow(new Object[]{
-                produto.nome,
+                produto.getNome(),
                 quantidade,
-                String.format("R$ %.2f", produto.preco),
+                String.format("R$ %.2f", produto.getValor()),
                 String.format("R$ %.2f", item.calcularSubtotal())
         });
 
@@ -342,7 +311,7 @@ public class Formulario extends JPanel implements Interface {
             return;
         }
 
-        ItemCarrinho item = itensPedido.get(linha);
+        ItemPedido item = itensPedido.get(linha);
         devolverEstoque(item);
         itensPedido.remove(linha);
         modeloTabela.removeRow(linha);
@@ -350,25 +319,27 @@ public class Formulario extends JPanel implements Interface {
     }
 
     private void cancelarPedido() {
-        for (ItemCarrinho item : itensPedido) {
+        for (ItemPedido item : itensPedido) {
             devolverEstoque(item);
         }
         itensPedido.clear();
         modeloTabela.setRowCount(0);
         txtCpf.setText("");
+        txtMesa.setText("");
         lblClienteEncontrado.setText("Nenhum cliente selecionado");
         clienteSelecionado = null;
         atualizarTotal();
     }
 
-    private void devolverEstoque(ItemCarrinho item) {
-        item.produto.estoque += item.quantidade;
-        atualizarLinhaProduto(item.produto);
+    private void devolverEstoque(ItemPedido item) {
+        Produto produto = item.getProduto();
+        produto.setQntdEstoque(produto.getQntdEstoque() + item.getQuantidade());
+        atualizarLinhaProduto(produto);
     }
 
     private void atualizarTotal() {
         double total = 0;
-        for (ItemCarrinho item : itensPedido) {
+        for (ItemPedido item : itensPedido) {
             total += item.calcularSubtotal();
         }
         lblTotal.setText(String.format("Total: R$ %.2f", total));
@@ -379,15 +350,15 @@ public class Formulario extends JPanel implements Interface {
         if (cpf.isEmpty()) return;
 
         clienteSelecionado = null;
-        for (String c : clientesDemo) {
-            if (c.contains(cpf)) {
+        for (Cliente c : clienteDAO.listar()) {
+            if (c.getCpf() != null && c.getCpf().contains(cpf)) {
                 clienteSelecionado = c;
                 break;
             }
         }
 
         lblClienteEncontrado.setText(clienteSelecionado != null
-                ? "Cliente: " + clienteSelecionado
+                ? "Cliente: " + clienteSelecionado.getNome() + " (" + clienteSelecionado.getCpf() + ")"
                 : "Cliente não encontrado");
     }
 
@@ -397,15 +368,45 @@ public class Formulario extends JPanel implements Interface {
             return;
         }
 
-        StringBuilder resumo = new StringBuilder("Pedido registrado (modo de teste):\n");
-        for (ItemCarrinho item : itensPedido) {
-            resumo.append(String.format("- %dx %s = R$ %.2f%n", item.quantidade, item.produto.nome, item.calcularSubtotal()));
+        if (clienteSelecionado == null) {
+            JOptionPane.showMessageDialog(this, "Busque e selecione um cliente antes de finalizar.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            return;
         }
+
+        int numeroMesa;
+        try {
+            numeroMesa = Integer.parseInt(txtMesa.getText().trim());
+        } catch (NumberFormatException ex) {
+            numeroMesa = 0;
+        }
+
+        Pedido pedido = new Pedido(0, clienteSelecionado, LocalDateTime.now(), StatusPedido.pendente(), 0, numeroMesa);
+        for (ItemPedido item : itensPedido) {
+            pedido.adicionarItem(item);
+        }
+
+        boolean sucesso = pedidoDAO.salvar(pedido);
+        if (!sucesso) {
+            JOptionPane.showMessageDialog(this, "Erro ao salvar o pedido no banco de dados.", "Erro MySQL", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        for (ItemPedido item : itensPedido) {
+            produtoDAO.ajustarEstoque(item.getProduto().getId(), item.getQuantidade(), false);
+        }
+
+        StringBuilder resumo = new StringBuilder("Pedido registrado com sucesso!\n");
+        for (ItemPedido item : itensPedido) {
+            resumo.append(String.format("- %dx %s = R$ %.2f%n",
+                    item.getQuantidade(), item.getProduto().getNome(), item.calcularSubtotal()));
+        }
+        resumo.append(String.format("Total: R$ %.2f", pedido.getValorTotal()));
         JOptionPane.showMessageDialog(this, resumo.toString());
 
         itensPedido.clear();
         modeloTabela.setRowCount(0);
         txtCpf.setText("");
+        txtMesa.setText("");
         lblClienteEncontrado.setText("Nenhum cliente selecionado");
         clienteSelecionado = null;
         atualizarTotal();
