@@ -115,7 +115,7 @@ Para garantir um desenvolvimento paralelo, fluido e sem conflitos de código no 
 
 ## Diagrama de Classes
 
-[Diagrama de Classes (PDF)](./docs/DiagramaGatocafe.pdf)
+[Diagrama de Classes (PNG)](./docs/Miaucha.drawio.png)
 
 ---
 
