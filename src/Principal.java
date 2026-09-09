@@ -25,10 +25,13 @@ public class Principal extends JFrame {
         Formulario aba1 = new Formulario();
         PainelEstoque aba2 = new PainelEstoque();
         PainelClientes aba3 = new PainelClientes();
-
+        PainelComandas aba4 = new PainelComandas();
+        
         abas.addTab("Formulario", aba1);
         abas.addTab("Estoque", aba2);
         abas.addTab("Clientes", aba3);
+        abas.addTab("Comandas", aba4);
+
 
         add(abas);
         setVisible(true);
