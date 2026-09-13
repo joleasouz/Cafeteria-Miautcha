@@ -57,4 +57,34 @@ public class ClienteDAO {
 
         return clientes;
     }
+
+    public List<Cliente> pesquisar(String termo) {
+        List<Cliente> clientes = new ArrayList<>();
+        String sql = "SELECT id, nome, cpf, email, telefone FROM clientes WHERE nome LIKE ? OR cpf LIKE ?";
+
+        try (Connection conn = Conexao.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, "%" + termo + "%");
+            stmt.setString(2, "%" + termo + "%");
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Cliente cliente = new Cliente();
+                    cliente.setId(rs.getInt("id"));
+                    cliente.setNome(rs.getString("nome"));
+                    cliente.setCpf(rs.getString("cpf"));
+                    cliente.setTelefone(rs.getString("telefone"));
+                    cliente.setEmail(rs.getString("email"));
+
+                    clientes.add(cliente);
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println("erro ao pesquisar clientes: " + e.getMessage());
+        }
+
+        return clientes;
+    }
 }
