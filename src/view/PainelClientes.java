@@ -3,25 +3,31 @@ package view;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 import data.dao.ClienteDAO;
+import data.dao.PedidoDAO;
 import model.Cliente;
 
 public class PainelClientes extends JPanel implements Interface {
 
-    private JList<String> listaClientesEsquerda;
-    private DefaultListModel<String> modeloListaClientes;
+    private JList<Cliente> listaClientesEsquerda;
+    private DefaultListModel<Cliente> modeloListaClientes;
+    private JTextField txtPesquisaCliente;
+    private JButton btnPesquisarCliente;
     private JTextField txtNome, txtCpf, txtTelefone, txtEmail;
     private JTable tabelaHistorico;
     private DefaultTableModel modeloTabelaHistorico;
     private JButton btnCadastrar;
     private ClienteDAO clienteDAO;
+    private PedidoDAO pedidoDAO;
 
     public PainelClientes() {
         clienteDAO = new ClienteDAO();
+        pedidoDAO = new PedidoDAO();
 
         setLayout(new BorderLayout(15, 15));
         setBackground(COR_FUNDO_PAINEL);
@@ -40,11 +46,21 @@ public class PainelClientes extends JPanel implements Interface {
         tituloEsquerda.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         painelTituloEsquerda.add(tituloEsquerda, BorderLayout.CENTER);
 
+        JPanel painelPesquisaCliente = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 4));
+        painelPesquisaCliente.setBackground(COR_FUNDO_PAINEL_ESCURO);
+        txtPesquisaCliente = criarCampoCliente();
+        txtPesquisaCliente.setPreferredSize(new Dimension(120, 26));
+        btnPesquisarCliente = Interface.botaoArredondado("Buscar", COR_BOTAO_PRIMARIO);
+        painelPesquisaCliente.add(txtPesquisaCliente);
+        painelPesquisaCliente.add(btnPesquisarCliente);
+        painelTituloEsquerda.add(painelPesquisaCliente, BorderLayout.SOUTH);
+
         painelEsquerda.add(painelTituloEsquerda, BorderLayout.NORTH);
 
         modeloListaClientes = new DefaultListModel<>();
         listaClientesEsquerda = new JList<>(modeloListaClientes);
         listaClientesEsquerda.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        listaClientesEsquerda.setCellRenderer(new ClienteCellRenderer());
 
         JScrollPane scrollLista = new JScrollPane(listaClientesEsquerda);
         scrollLista.setBorder(BorderFactory.createEmptyBorder());
@@ -156,6 +172,22 @@ public class PainelClientes extends JPanel implements Interface {
             }
         });
 
+        btnPesquisarCliente.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                pesquisarClientes();
+            }
+        });
+
+        listaClientesEsquerda.addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                Cliente selecionado = listaClientesEsquerda.getSelectedValue();
+                if (selecionado != null) {
+                    HistoricoPedidos(selecionado);
+                }
+            }
+        });
+
         carregarListaClientes();
 
         setVisible(true);
@@ -204,7 +236,65 @@ public class PainelClientes extends JPanel implements Interface {
     private void carregarListaClientes() {
         modeloListaClientes.clear();
         for (Cliente c : clienteDAO.listar()) {
-            modeloListaClientes.addElement(c.getNome() + " (" + c.getCpf() + ")");
+            modeloListaClientes.addElement(c);
+        }
+    }
+
+    private void pesquisarClientes() {
+        String termo = txtPesquisaCliente.getText().trim();
+        List<Cliente> resultado = termo.isEmpty() ? clienteDAO.listar() : clienteDAO.pesquisar(termo);
+        modeloListaClientes.clear();
+        for (Cliente c : resultado) {
+            modeloListaClientes.addElement(c);
+        }
+    }
+
+    private void HistoricoPedidos(Cliente cliente) {
+        modeloTabelaHistorico.setRowCount(0);
+        for (Object[] linha : pedidoDAO.listarHistoricoPorCliente(cliente.getId())) {
+            modeloTabelaHistorico.addRow(linha);
+        }
+    }
+
+    private JTextField criarCampoCliente() {
+        JTextField campo = new JTextField();
+        campo.setFont(new Font("SansSerif", Font.PLAIN, 12));
+        campo.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(180, 180, 180), 1, true),
+                BorderFactory.createEmptyBorder(4, 6, 4, 6)));
+        return campo;
+    }
+
+    private static class ClienteCellRenderer extends JPanel implements ListCellRenderer<Cliente> {
+        private final JLabel lblNome = new JLabel();
+        private final JLabel lblCpf = new JLabel();
+        private final JLabel lblId = new JLabel();
+
+        ClienteCellRenderer() {
+            setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+            lblNome.setFont(new Font("SansSerif", Font.BOLD, 12));
+            lblCpf.setFont(new Font("SansSerif", Font.PLAIN, 11));
+            lblId.setFont(new Font("SansSerif", Font.PLAIN, 11));
+            lblNome.setForeground(COR_TEXTO);
+            lblCpf.setForeground(COR_TEXTO);
+            lblId.setForeground(COR_TEXTO);
+            setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createMatteBorder(0, 0, 1, 0, COR_FUNDO_PAINEL),
+                    BorderFactory.createEmptyBorder(6, 8, 6, 8)));
+            add(lblNome);
+            add(lblCpf);
+            add(lblId);
+            setOpaque(true);
+        }
+
+        @Override
+        public Component getListCellRendererComponent(JList<? extends Cliente> list, Cliente cliente, int index,
+                boolean isSelected, boolean cellHasFocus) {
+            lblNome.setText(cliente.getNome());
+            lblCpf.setText("CPF: " + cliente.getCpf());
+            lblId.setText("ID: " + cliente.getId());
+            setBackground(isSelected ? COR_SELECAO_TABELA : Color.WHITE);
+            return this;
         }
     }
 
