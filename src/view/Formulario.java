@@ -40,7 +40,8 @@ public class Formulario extends JPanel implements Interface {
     private final Consumer<String> aoNavegar;
 
     public Formulario() {
-        this(destino -> { /* sem nada*/ });
+        this(destino -> {
+            /* sem nada */ });
     }
 
     public Formulario(Consumer<String> aoNavegar) {
@@ -55,16 +56,16 @@ public class Formulario extends JPanel implements Interface {
     private JComponent criarCabecalho() {
         JPanel cabecalho = new JPanel(new BorderLayout());
         cabecalho.setBackground(COR_CABECALHO);
+        cabecalho.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 
         JLabel titulo = new JLabel("MIAUTCHA SYSTEM", SwingConstants.CENTER);
         titulo.setFont(titulo.getFont().deriveFont(Font.BOLD, 26f));
         titulo.setForeground(COR_TEXTO_BOTAO);
-        titulo.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
-        cabecalho.add(titulo, BorderLayout.NORTH);
 
-        JPanel navBar = new JPanel(new FlowLayout(FlowLayout.LEFT, 15, 10));
-        navBar.setBackground(COR_CABECALHO);
-        cabecalho.add(navBar, BorderLayout.SOUTH);
+        JButton btnRecarregar = Interface.botaoRecarregar(this::recarregarTela);
+
+        cabecalho.add(titulo, BorderLayout.CENTER);
+        cabecalho.add(btnRecarregar, BorderLayout.EAST);
 
         return cabecalho;
     }
@@ -100,6 +101,7 @@ public class Formulario extends JPanel implements Interface {
         painel.add(painelTitulo, BorderLayout.NORTH);
 
         JPanel listaProdutos = new JPanel();
+        listaProdutos.setName("listaProdutosContainer"); // Nome adicionado para fácil localização na recarga
         listaProdutos.setBackground(COR_FUNDO_PAINEL);
         listaProdutos.setLayout(new BoxLayout(listaProdutos, BoxLayout.Y_AXIS));
         listaProdutos.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
@@ -147,6 +149,55 @@ public class Formulario extends JPanel implements Interface {
         linha.add(btnAdicionar, BorderLayout.EAST);
 
         return linha;
+    }
+
+    public void recarregarTela() {
+        // limpa e reseta os itens pendentes do pedido atual
+        for (ItemPedido item : itensPedido) {
+            devolverEstoque(item);
+        }
+        itensPedido.clear();
+        modeloTabela.setRowCount(0);
+        txtCpf.setText("");
+        txtMesa.setText("");
+        lblClienteEncontrado.setText("Nenhum cliente selecionado");
+        clienteSelecionado = null;
+        atualizarTotal();
+
+        // busca o catalogo atualizado do banco de dados
+        catalogo.clear();
+        catalogo.addAll(produtoDAO.listar());
+
+        // limpa os campos
+        labelsEstoque.clear();
+        botoesAdicionar.clear();
+
+        // volta com os componentes do catalogo
+        for (Component comp : getComponents()) {
+            reconstruirCatalogoVisual(this);
+        }
+
+        revalidate();
+        repaint();
+    }
+
+    private void reconstruirCatalogoVisual(Container container) {
+        for (Component c : container.getComponents()) {
+            if ("listaProdutosContainer".equals(c.getName()) && c instanceof JPanel) {
+                JPanel listaProdutos = (JPanel) c;
+                listaProdutos.removeAll();
+                for (Produto produto : catalogo) {
+                    listaProdutos.add(criarLinhaProduto(produto));
+                    listaProdutos.add(Box.createRigidArea(new Dimension(0, 6)));
+                }
+                listaProdutos.revalidate();
+                listaProdutos.repaint();
+                return;
+            }
+            if (c instanceof Container) {
+                reconstruirCatalogoVisual((Container) c);
+            }
+        }
     }
 
     private void atualizarLinhaProduto(Produto produto) {
@@ -222,7 +273,7 @@ public class Formulario extends JPanel implements Interface {
     }
 
     private JComponent criarPainelTabelaItens() {
-        String[] colunas = {"Produto", "Qtd", "Preço unit.", "Subtotal"};
+        String[] colunas = { "Produto", "Qtd", "Preço unit.", "Subtotal" };
         modeloTabela = new DefaultTableModel(colunas, 0) {
             @Override
             public boolean isCellEditable(int row, int col) {
@@ -270,12 +321,14 @@ public class Formulario extends JPanel implements Interface {
     private void adicionarItemAoPedido(Produto produto) {
         String qtdStr = JOptionPane.showInputDialog(this,
                 "Quantidade de " + produto.getNome() + " (estoque: " + produto.getQntdEstoque() + "):", "1");
-        if (qtdStr == null) return;
+        if (qtdStr == null)
+            return;
 
         int quantidade;
         try {
             quantidade = Integer.parseInt(qtdStr.trim());
-            if (quantidade <= 0) throw new NumberFormatException();
+            if (quantidade <= 0)
+                throw new NumberFormatException();
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Quantidade inválida.", "Erro", JOptionPane.ERROR_MESSAGE);
             return;
@@ -294,7 +347,7 @@ public class Formulario extends JPanel implements Interface {
         ItemPedido item = new ItemPedido(0, produto, quantidade, produto.getValor());
         itensPedido.add(item);
 
-        modeloTabela.addRow(new Object[]{
+        modeloTabela.addRow(new Object[] {
                 produto.getNome(),
                 quantidade,
                 String.format("R$ %.2f", produto.getValor()),
@@ -307,7 +360,8 @@ public class Formulario extends JPanel implements Interface {
     private void removerItemSelecionado() {
         int linha = tabelaItens.getSelectedRow();
         if (linha == -1) {
-            JOptionPane.showMessageDialog(this, "Selecione um item para remover.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Selecione um item para remover.", "Aviso",
+                    JOptionPane.WARNING_MESSAGE);
             return;
         }
 
@@ -347,7 +401,8 @@ public class Formulario extends JPanel implements Interface {
 
     private void buscarCliente() {
         String cpf = txtCpf.getText().trim();
-        if (cpf.isEmpty()) return;
+        if (cpf.isEmpty())
+            return;
 
         clienteSelecionado = null;
         for (Cliente c : clienteDAO.listar()) {
@@ -364,12 +419,14 @@ public class Formulario extends JPanel implements Interface {
 
     private void finalizarPedido() {
         if (itensPedido.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Adicione ao menos um item antes de finalizar.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Adicione ao menos um item antes de finalizar.", "Aviso",
+                    JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         if (clienteSelecionado == null) {
-            JOptionPane.showMessageDialog(this, "Busque e selecione um cliente antes de finalizar.", "Aviso", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Busque e selecione um cliente antes de finalizar.", "Aviso",
+                    JOptionPane.WARNING_MESSAGE);
             return;
         }
 
@@ -387,7 +444,8 @@ public class Formulario extends JPanel implements Interface {
 
         boolean sucesso = pedidoDAO.salvar(pedido);
         if (!sucesso) {
-            JOptionPane.showMessageDialog(this, "Erro ao salvar o pedido no banco de dados.", "Erro MySQL", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Erro ao salvar o pedido no banco de dados.", "Erro MySQL",
+                    JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -412,12 +470,14 @@ public class Formulario extends JPanel implements Interface {
         atualizarTotal();
     }
 
-    /*public static void main(String[] args) {
-        JFrame frame = new JFrame("Miautcha - Teste do Formulario");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1000, 650);
-        frame.setLocationRelativeTo(null);
-        frame.add(new Formulario());
-        frame.setVisible(true);
-    }*/
+    /*
+     * public static void main(String[] args) {
+     * JFrame frame = new JFrame("Miautcha - Teste do Formulario");
+     * frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+     * frame.setSize(1000, 650);
+     * frame.setLocationRelativeTo(null);
+     * frame.add(new Formulario());
+     * frame.setVisible(true);
+     * }
+     */
 }

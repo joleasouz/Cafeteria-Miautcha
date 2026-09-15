@@ -125,4 +125,12 @@ public interface Interface {
 
         return painel;
     }
+
+    // metodo de criar botao p recarregar
+    static JButton botaoRecarregar(Runnable acaoRecarregar) {
+        JButton botao = botaoArredondado("↻", COR_BOTAO_PRIMARIO);
+        botao.addActionListener(e -> acaoRecarregar.run());
+        return botao;
+    }
+
 }
