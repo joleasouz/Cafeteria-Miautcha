@@ -6,6 +6,7 @@ import view.Formulario;
 import view.Interface;
 import view.PainelClientes;
 import view.PainelEstoque;
+import view.PainelComandas;
 
 public class Principal extends JFrame {
     public Principal() {

@@ -182,9 +182,6 @@ public class PainelClientes extends JPanel implements Interface {
         listaClientesEsquerda.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 Cliente selecionado = listaClientesEsquerda.getSelectedValue();
-                if (selecionado != null) {
-                    HistoricoPedidos(selecionado);
-                }
             }
         });
 
@@ -246,13 +243,6 @@ public class PainelClientes extends JPanel implements Interface {
         modeloListaClientes.clear();
         for (Cliente c : resultado) {
             modeloListaClientes.addElement(c);
-        }
-    }
-
-    private void HistoricoPedidos(Cliente cliente) {
-        modeloTabelaHistorico.setRowCount(0);
-        for (Object[] linha : pedidoDAO.listarHistoricoPorCliente(cliente.getId())) {
-            modeloTabelaHistorico.addRow(linha);
         }
     }
 

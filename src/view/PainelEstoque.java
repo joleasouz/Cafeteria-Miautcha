@@ -9,7 +9,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
 import model.Produto;
 
 public final class PainelEstoque extends JPanel implements Interface {
@@ -21,23 +20,23 @@ public final class PainelEstoque extends JPanel implements Interface {
     private final JLabel lblStatusEstoque;
     private int idProdutoSelecionado = -1;
 
-    private ProdutoDAO produtoDAO = new ProdutoDAO();
+    private final ProdutoDAO produtoDAO = new ProdutoDAO();
 
     public PainelEstoque() {
         setLayout(new BorderLayout(15, 15));
         setBackground(COR_FUNDO_PAINEL);
         setBorder(new EmptyBorder(15, 15, 15, 15));
 
-        // painel superiror - cadastro de produtos
-        txtNome = Interface.comTamanho(Interface.CampoDados("Nome do Produto"), 400, 50);
-        txtPreco = Interface.comTamanho(Interface.CampoDados("Preço (R$)"), 400, 50);
-        txtQtd = Interface.comTamanho(Interface.CampoDados("Qtd Inicial"), 400, 50);
-        btnCadastrar = Interface.comTamanho(Interface.botaoArredondado("Cadastrar Produto", COR_BOTAO_PRIMARIO), 200, 50);
+        // Painel superior - Cadastro de produtos
+        txtNome = Interface.comTamanho(Interface.campoDados("Nome do Produto"), 200, 35);
+        txtPreco = Interface.comTamanho(Interface.campoDados("Preço (R$)"), 120, 35);
+        txtQtd = Interface.comTamanho(Interface.campoDados("Qtd Inicial"), 100, 35);
+        btnCadastrar = Interface.comTamanho(Interface.botaoArredondado("Cadastrar Produto", COR_BOTAO_PRIMARIO), 160, 35);
 
-        JPanel painelFormulario = Interface.criarPainelFormulario(110, txtNome, txtPreco, txtQtd, btnCadastrar);
+        JPanel painelFormulario = Interface.criarPainelFormulario(80, txtNome, txtPreco, txtQtd, btnCadastrar);
         add(painelFormulario, BorderLayout.NORTH);
 
-        // painel central - tabela de produtos
+        // Painel central - Tabela de produtos
         modeloTabela = new DefaultTableModel(new Object[] { "ID", "Nome", "Preço (R$)", "Qtd Estoque", "Status" }, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -53,14 +52,10 @@ public final class PainelEstoque extends JPanel implements Interface {
         tabela.setShowVerticalLines(false);
         tabela.setGridColor(new Color(230, 230, 230));
 
-        // estilo do cabeçalho
-        JTableHeader header = tabela.getTableHeader();
-        header.setFont(new Font("SansSerif", Font.BOLD, 13));
-        header.setBackground(COR_CABECALHO);
-        header.setForeground(Color.white);
-        header.setPreferredSize(new Dimension(100, 32));
+        // Estilização do cabeçalho da tabela
+        Interface.estilizarCabecalhoTabela(tabela);
 
-        // centralizar texto nas colunas
+        // Centralizar texto nas colunas numéricas e de status
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         tabela.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
@@ -73,11 +68,11 @@ public final class PainelEstoque extends JPanel implements Interface {
         scrollPane.setBorder(BorderFactory.createLineBorder(new Color(220, 220, 220)));
         add(scrollPane, BorderLayout.CENTER);
 
-        // painel inferior - controle de estoque e ações
+        // Painel inferior - Controle de estoque e ações
         JPanel painelInferior = new JPanel(new GridLayout(2, 1, 10, 10));
         painelInferior.setBackground(COR_FUNDO_PAINEL);
 
-        // subpainel de entrada e saida de estoque
+        // Subpainel de ajuste de estoque
         JPanel painelAjuste = Interface.paineis(new FlowLayout(FlowLayout.LEFT, 12, 5), COR_FUNDO_PAINEL_ESCURO);
 
         txtAjusteQtd = criarCampoTexto();
@@ -95,7 +90,7 @@ public final class PainelEstoque extends JPanel implements Interface {
         painelAjuste.add(Box.createHorizontalStrut(20));
         painelAjuste.add(lblStatusEstoque);
 
-        // subpainel de busca e exclusão
+        // Subpainel de busca e ações
         JPanel painelAcoes = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 5));
         painelAcoes.setBackground(COR_FUNDO_PAINEL);
 
@@ -117,31 +112,16 @@ public final class PainelEstoque extends JPanel implements Interface {
 
         add(painelInferior, BorderLayout.SOUTH);
 
-        // --- eventos ---
-        btnCadastrar.addActionListener((ActionEvent e) -> {
-            cadastrarProduto();
-        });
-
-        btnAdicionarEstoque.addActionListener((ActionEvent e) -> {
-            alterarEstoque(true);
-        });
-
-        btnRemoverEstoque.addActionListener((ActionEvent e) -> {
-            alterarEstoque(false);
-        });
-
+        // --- Eventos ---
+        btnCadastrar.addActionListener((ActionEvent e) -> cadastrarProduto());
+        btnAdicionarEstoque.addActionListener((ActionEvent e) -> alterarEstoque(true));
+        btnRemoverEstoque.addActionListener((ActionEvent e) -> alterarEstoque(false));
         btnAtualizar.addActionListener((ActionEvent e) -> {
             carregarTabela("");
             limparCampos();
         });
-
-        btnPesquisar.addActionListener((ActionEvent e) -> {
-            carregarTabela(txtPesquisa.getText().trim());
-        });
-
-        btnExcluir.addActionListener((ActionEvent e) -> {
-            excluirProduto();
-        });
+        btnPesquisar.addActionListener((ActionEvent e) -> carregarTabela(txtPesquisa.getText().trim()));
+        btnExcluir.addActionListener((ActionEvent e) -> excluirProduto());
 
         tabela.getSelectionModel().addListSelectionListener((ListSelectionEvent e) -> {
             if (!e.getValueIsAdjusting()) {
@@ -152,7 +132,6 @@ public final class PainelEstoque extends JPanel implements Interface {
         carregarTabela("");
     }
 
-    // estilizacao
     private JTextField criarCampoTexto() {
         JTextField campo = new JTextField();
         campo.setFont(new Font("SansSerif", Font.PLAIN, 12));
@@ -170,15 +149,15 @@ public final class PainelEstoque extends JPanel implements Interface {
         return label;
     }
 
-    // rn e bd
-   private void cadastrarProduto() {
+    private void cadastrarProduto() {
         String nome = txtNome.getText().trim();
         String precoStr = txtPreco.getText().trim().replace(",", ".");
         String qtdStr = txtQtd.getText().trim();
 
-        if (nome.isEmpty() || precoStr.isEmpty() || qtdStr.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Preencha todos os campos para o novo produto!", "Aviso",
-                    JOptionPane.WARNING_MESSAGE);
+        if (nome.isEmpty() || nome.equals("Nome do Produto") ||
+            precoStr.isEmpty() || precoStr.equals("Preço (R$)") ||
+            qtdStr.isEmpty() || qtdStr.equals("Qtd Inicial")) {
+            JOptionPane.showMessageDialog(this, "Preencha todos os campos para o novo produto!", "Aviso", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
@@ -197,7 +176,6 @@ public final class PainelEstoque extends JPanel implements Interface {
             return;
         }
 
-        // Ajustado para usar a instância do DAO e tratar o retorno booleano
         boolean sucesso = produtoDAO.cadastrar(nome, preco, quantidade);
         if (sucesso) {
             JOptionPane.showMessageDialog(this, "Produto cadastrado com sucesso!");
@@ -210,16 +188,13 @@ public final class PainelEstoque extends JPanel implements Interface {
 
     private void alterarEstoque(boolean aumentar) {
         if (idProdutoSelecionado == -1) {
-            JOptionPane.showMessageDialog(this, "Selecione um produto na tabela primeiro!", "Aviso",
-                    JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Selecione um produto na tabela primeiro!", "Aviso", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         String qtdStr = txtAjusteQtd.getText().trim();
         if (qtdStr.isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                    "Informe a quantidade a ser " + (aumentar ? "adicionada" : "removida") + "!", "Aviso",
-                    JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Informe a quantidade a ser " + (aumentar ? "adicionada" : "removida") + "!", "Aviso", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
@@ -236,7 +211,6 @@ public final class PainelEstoque extends JPanel implements Interface {
             return;
         }
 
-        // Ajustado para usar a instância do DAO
         boolean sucesso = produtoDAO.ajustarEstoque(idProdutoSelecionado, valorAjuste, aumentar);
         if (sucesso) {
             JOptionPane.showMessageDialog(this, "Estoque " + (aumentar ? "atualizado (+)" : "reduzido (-)") + " com sucesso!");
@@ -251,15 +225,12 @@ public final class PainelEstoque extends JPanel implements Interface {
 
     private void excluirProduto() {
         if (idProdutoSelecionado == -1) {
-            JOptionPane.showMessageDialog(this, "Selecione um produto na tabela para excluir.", "Aviso",
-                    JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Selecione um produto na tabela para excluir.", "Aviso", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        int confirmacao = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir o produto selecionado?",
-                "Confirmação", JOptionPane.YES_NO_OPTION);
+        int confirmacao = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja excluir o produto selecionado?", "Confirmação", JOptionPane.YES_NO_OPTION);
         if (confirmacao == JOptionPane.YES_OPTION) {
-            // Ajustado para usar a instância do DAO
             boolean sucesso = produtoDAO.excluir(idProdutoSelecionado);
             if (sucesso) {
                 JOptionPane.showMessageDialog(this, "Produto excluído com sucesso!");
@@ -315,9 +286,15 @@ public final class PainelEstoque extends JPanel implements Interface {
     }
 
     private void limparCampos() {
-        txtNome.setText("");
-        txtPreco.setText("");
-        txtQtd.setText("");
+        txtNome.setText("Nome do Produto");
+        txtNome.setForeground(Color.GRAY);
+        
+        txtPreco.setText("Preço (R$)");
+        txtPreco.setForeground(Color.GRAY);
+        
+        txtQtd.setText("Qtd Inicial");
+        txtQtd.setForeground(Color.GRAY);
+
         txtAjusteQtd.setText("");
         txtPesquisa.setText("");
         idProdutoSelecionado = -1;
