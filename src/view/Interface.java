@@ -74,15 +74,26 @@ public interface Interface {
 
     // caixa de entrada de dados
     static JTextField campoDados(String dado) {
-        JTextField campo = new JTextField(dado);
+        JTextField campo = new JTextField(dado) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                Graphics2D grafico = (Graphics2D) g.create();
+                grafico.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                
+                // Desenha o fundo retangular arredondado
+                grafico.setColor(Color.WHITE); // Cor do fundo do campo
+                grafico.fillRoundRect(0, 0, getWidth(), getHeight(), 30, 30); // 15x15 é o nível de arredondamento
+                
+                grafico.dispose();
+                super.paintComponent(g);
+            }
+        };
 
         campo.setForeground(Color.GRAY);
         campo.setFont(new Font("SansSerif", Font.PLAIN, 14));
         campo.setOpaque(false);
 
-        Border linhaInferior = new MatteBorder(0, 0, 2, 0, new Color(100, 100, 100));
-        Border margemInterna = BorderFactory.createEmptyBorder(5, 5, 5, 5);
-        campo.setBorder(BorderFactory.createCompoundBorder(linhaInferior, margemInterna));
+        campo.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
         campo.addFocusListener(new FocusAdapter() {
             @Override

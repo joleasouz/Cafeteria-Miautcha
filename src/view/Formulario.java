@@ -247,11 +247,7 @@ public class Formulario extends JPanel implements Interface {
         JPanel painel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         painel.setBackground(COR_FUNDO_PAINEL);
 
-        JLabel lblCpf = new JLabel("CPF do cliente:");
-        lblCpf.setForeground(COR_TEXTO);
-        painel.add(lblCpf);
-
-        txtCpf = new JTextField(15);
+        txtCpf = Interface.comTamanho(Interface.campoDados("CPF do cliente"), 200, 35);
         painel.add(txtCpf);
 
         JButton btnBuscar = Interface.botaoArredondado("Buscar cliente", COR_BOTAO_PRIMARIO);
@@ -262,11 +258,7 @@ public class Formulario extends JPanel implements Interface {
         lblClienteEncontrado.setForeground(COR_TEXTO);
         painel.add(lblClienteEncontrado);
 
-        JLabel lblMesa = new JLabel("  Mesa:");
-        lblMesa.setForeground(COR_TEXTO);
-        painel.add(lblMesa);
-
-        txtMesa = new JTextField(4);
+        txtMesa = Interface.comTamanho(Interface.campoDados("Mesa"), 60, 35);
         painel.add(txtMesa);
 
         return painel;

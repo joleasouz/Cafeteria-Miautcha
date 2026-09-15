@@ -49,7 +49,7 @@ public class PainelClientes extends JPanel implements Interface {
         JPanel painelPesquisaCliente = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 4));
         painelPesquisaCliente.setBackground(COR_FUNDO_PAINEL_ESCURO);
         txtPesquisaCliente = criarCampoCliente();
-        txtPesquisaCliente.setPreferredSize(new Dimension(120, 26));
+        txtPesquisaCliente = Interface.comTamanho(Interface.campoDados(" "), 195, 30);
         btnPesquisarCliente = Interface.botaoArredondado("Buscar", COR_BOTAO_PRIMARIO);
         painelPesquisaCliente.add(txtPesquisaCliente);
         painelPesquisaCliente.add(btnPesquisarCliente);

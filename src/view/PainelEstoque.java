@@ -29,8 +29,8 @@ public final class PainelEstoque extends JPanel implements Interface {
 
         // Painel superior - Cadastro de produtos
         txtNome = Interface.comTamanho(Interface.campoDados("Nome do Produto"), 200, 35);
-        txtPreco = Interface.comTamanho(Interface.campoDados("Preço (R$)"), 120, 35);
-        txtQtd = Interface.comTamanho(Interface.campoDados("Qtd Inicial"), 100, 35);
+        txtPreco = Interface.comTamanho(Interface.campoDados("Preço (R$)"), 200, 35);
+        txtQtd = Interface.comTamanho(Interface.campoDados("Qtd Inicial"), 200, 35);
         btnCadastrar = Interface.comTamanho(Interface.botaoArredondado("Cadastrar Produto", COR_BOTAO_PRIMARIO), 160, 35);
 
         JPanel painelFormulario = Interface.criarPainelFormulario(80, txtNome, txtPreco, txtQtd, btnCadastrar);
@@ -75,8 +75,7 @@ public final class PainelEstoque extends JPanel implements Interface {
         // Subpainel de ajuste de estoque
         JPanel painelAjuste = Interface.paineis(new FlowLayout(FlowLayout.LEFT, 12, 5), COR_FUNDO_PAINEL_ESCURO);
 
-        txtAjusteQtd = criarCampoTexto();
-        txtAjusteQtd.setPreferredSize(new Dimension(60, 28));
+        txtAjusteQtd = Interface.comTamanho(Interface.campoDados(" "),100, 35);
         btnAdicionarEstoque = Interface.botaoArredondado("+ Entrada", COR_BOTAO_VERDE);
         btnRemoverEstoque = Interface.botaoArredondado("- Baixa", COR_BOTAO_VERMELHO);
 
@@ -90,17 +89,15 @@ public final class PainelEstoque extends JPanel implements Interface {
         painelAjuste.add(Box.createHorizontalStrut(20));
         painelAjuste.add(lblStatusEstoque);
 
-        // Subpainel de busca e ações
+        // subpainel de busca e ações
         JPanel painelAcoes = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 5));
         painelAcoes.setBackground(COR_FUNDO_PAINEL);
 
-        txtPesquisa = criarCampoTexto();
-        txtPesquisa.setPreferredSize(new Dimension(160, 28));
+        txtPesquisa = Interface.comTamanho(Interface.campoDados("Buscar produto"),200, 35);
         btnPesquisar = Interface.botaoArredondado("Pesquisar", COR_BOTAO_PRIMARIO);
         btnAtualizar = Interface.botaoArredondado("Atualizar Tabela", COR_BOTAO_PRIMARIO);
         btnExcluir = Interface.botaoArredondado("Excluir Produto", COR_BOTAO_VERMELHO);
 
-        painelAcoes.add(criarRotulo("Buscar Nome:"));
         painelAcoes.add(txtPesquisa);
         painelAcoes.add(btnPesquisar);
         painelAcoes.add(btnAtualizar);
