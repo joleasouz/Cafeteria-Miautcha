@@ -129,6 +129,7 @@ public interface Interface {
     // metodo de criar botao p recarregar
     static JButton botaoRecarregar(Runnable acaoRecarregar) {
         JButton botao = botaoArredondado("↻", COR_BOTAO_PRIMARIO);
+        botao.setFont(new Font("SansSerif", Font.BOLD, 18));
         botao.addActionListener(e -> acaoRecarregar.run());
         return botao;
     }
