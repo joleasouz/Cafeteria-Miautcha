@@ -16,7 +16,7 @@ public final class PainelEstoque extends JPanel implements Interface {
     private final JTable tabela;
     private final DefaultTableModel modeloTabela;
     private final JTextField txtNome, txtPreco, txtQtd, txtPesquisa, txtAjusteQtd;
-    private final JButton btnCadastrar, btnExcluir, btnPesquisar, btnAtualizar, btnAdicionarEstoque, btnRemoverEstoque;
+    private final JButton btnCadastrar, btnExcluir, btnPesquisar, btnAdicionarEstoque, btnRemoverEstoque, btnRecarregar;
     private final JLabel lblStatusEstoque;
     private int idProdutoSelecionado = -1;
 
@@ -27,16 +27,26 @@ public final class PainelEstoque extends JPanel implements Interface {
         setBackground(COR_FUNDO_PAINEL);
         setBorder(new EmptyBorder(15, 15, 15, 15));
 
-        // Painel superior - Cadastro de produtos
+        // painel de cadastro de produtos
+        JPanel painelCadastrar = new JPanel(new BorderLayout(10, 10));
+        painelCadastrar.setBackground(COR_FUNDO_PAINEL);
+
+        // campos de cadastro
         txtNome = Interface.comTamanho(Interface.campoDados("Nome do Produto"), 200, 35);
         txtPreco = Interface.comTamanho(Interface.campoDados("Preço (R$)"), 200, 35);
         txtQtd = Interface.comTamanho(Interface.campoDados("Qtd Inicial"), 200, 35);
         btnCadastrar = Interface.comTamanho(Interface.botaoArredondado("Cadastrar Produto", COR_BOTAO_PRIMARIO), 160, 35);
 
         JPanel painelFormulario = Interface.criarPainelFormulario(80, txtNome, txtPreco, txtQtd, btnCadastrar);
-        add(painelFormulario, BorderLayout.NORTH);
 
-        // Painel central - Tabela de produtos
+        btnRecarregar = Interface.botaoRecarregar(this::recarregarTela);
+
+        painelCadastrar.add(painelFormulario, BorderLayout.CENTER);
+        painelCadastrar.add(btnRecarregar, BorderLayout.EAST);
+
+        add(painelCadastrar, BorderLayout.NORTH);
+
+        // painel da tabela
         modeloTabela = new DefaultTableModel(new Object[] { "ID", "Nome", "Preço (R$)", "Qtd Estoque", "Status" }, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -44,6 +54,7 @@ public final class PainelEstoque extends JPanel implements Interface {
             }
         };
 
+        // estilizacao da tabela
         tabela = new JTable(modeloTabela);
         tabela.setFont(new Font("SansSerif", Font.PLAIN, 12));
         tabela.setRowHeight(28);
@@ -52,10 +63,9 @@ public final class PainelEstoque extends JPanel implements Interface {
         tabela.setShowVerticalLines(false);
         tabela.setGridColor(new Color(230, 230, 230));
 
-        // Estilização do cabeçalho da tabela
         Interface.estilizarCabecalhoTabela(tabela);
 
-        // Centralizar texto nas colunas numéricas e de status
+        // colunas
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         tabela.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
@@ -68,14 +78,14 @@ public final class PainelEstoque extends JPanel implements Interface {
         scrollPane.setBorder(BorderFactory.createLineBorder(new Color(220, 220, 220)));
         add(scrollPane, BorderLayout.CENTER);
 
-        // Painel inferior - Controle de estoque e ações
+        // painel de atualizacao de estoque
         JPanel painelInferior = new JPanel(new GridLayout(2, 1, 10, 10));
         painelInferior.setBackground(COR_FUNDO_PAINEL);
 
-        // Subpainel de ajuste de estoque
         JPanel painelAjuste = Interface.paineis(new FlowLayout(FlowLayout.LEFT, 12, 5), COR_FUNDO_PAINEL_ESCURO);
 
-        txtAjusteQtd = Interface.comTamanho(Interface.campoDados(" "),100, 35);
+        // campos de dados e botoes
+        txtAjusteQtd = Interface.comTamanho(Interface.campoDados(" "), 100, 35);
         btnAdicionarEstoque = Interface.botaoArredondado("+ Entrada", COR_BOTAO_VERDE);
         btnRemoverEstoque = Interface.botaoArredondado("- Baixa", COR_BOTAO_VERMELHO);
 
@@ -89,18 +99,16 @@ public final class PainelEstoque extends JPanel implements Interface {
         painelAjuste.add(Box.createHorizontalStrut(20));
         painelAjuste.add(lblStatusEstoque);
 
-        // subpainel de busca e ações
+        // painel de busca e ações
         JPanel painelAcoes = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 5));
         painelAcoes.setBackground(COR_FUNDO_PAINEL);
 
-        txtPesquisa = Interface.comTamanho(Interface.campoDados("Buscar produto"),200, 35);
+        txtPesquisa = Interface.comTamanho(Interface.campoDados("Buscar produto"), 200, 35);
         btnPesquisar = Interface.botaoArredondado("Pesquisar", COR_BOTAO_PRIMARIO);
-        btnAtualizar = Interface.botaoArredondado("Atualizar Tabela", COR_BOTAO_PRIMARIO);
         btnExcluir = Interface.botaoArredondado("Excluir Produto", COR_BOTAO_VERMELHO);
 
         painelAcoes.add(txtPesquisa);
         painelAcoes.add(btnPesquisar);
-        painelAcoes.add(btnAtualizar);
         painelAcoes.add(Box.createHorizontalStrut(30));
         painelAcoes.add(btnExcluir);
 
@@ -109,14 +117,10 @@ public final class PainelEstoque extends JPanel implements Interface {
 
         add(painelInferior, BorderLayout.SOUTH);
 
-        // --- Eventos ---
+        // eventos
         btnCadastrar.addActionListener((ActionEvent e) -> cadastrarProduto());
         btnAdicionarEstoque.addActionListener((ActionEvent e) -> alterarEstoque(true));
         btnRemoverEstoque.addActionListener((ActionEvent e) -> alterarEstoque(false));
-        btnAtualizar.addActionListener((ActionEvent e) -> {
-            carregarTabela("");
-            limparCampos();
-        });
         btnPesquisar.addActionListener((ActionEvent e) -> carregarTabela(txtPesquisa.getText().trim()));
         btnExcluir.addActionListener((ActionEvent e) -> excluirProduto());
 
@@ -129,15 +133,12 @@ public final class PainelEstoque extends JPanel implements Interface {
         carregarTabela("");
     }
 
-    private JTextField criarCampoTexto() {
-        JTextField campo = new JTextField();
-        campo.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        campo.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(180, 180, 180), 1, true),
-                BorderFactory.createEmptyBorder(4, 6, 4, 6)));
-        return campo;
+    public void recarregarTela() {
+        carregarTabela("");
+        limparCampos();
     }
 
+    // rotulos para jlabels
     private JLabel criarRotulo(String texto) {
         JLabel label = new JLabel(texto);
         label.setFont(new Font("SansSerif", Font.BOLD, 12));
@@ -263,6 +264,7 @@ public final class PainelEstoque extends JPanel implements Interface {
         }
     }
 
+    // seleciona a linha e mostra os alertas de estoque
     private void selecionarLinhaTabela() {
         int linhaSelecionada = tabela.getSelectedRow();
         if (linhaSelecionada != -1) {

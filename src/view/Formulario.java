@@ -58,19 +58,25 @@ public class Formulario extends JPanel implements Interface {
         cabecalho.setBackground(COR_CABECALHO);
         cabecalho.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 
-        JLabel titulo = new JLabel("MIAUTCHA SYSTEM", SwingConstants.CENTER);
-        titulo.setFont(titulo.getFont().deriveFont(Font.BOLD, 26f));
-        titulo.setForeground(COR_TEXTO_BOTAO);
+        // Carrega a imagem da pasta src/assets/
+        ImageIcon iconOriginal = new ImageIcon(getClass().getResource("/assets/miautcha_cabecalho.png"));
+        
+        // Redimensiona a imagem para uma altura adequada de cabeçalho (ex: 50px mantendo proporção)
+        Image img = iconOriginal.getImage();
+        int larguraProporcional = (int) ((double) img.getWidth(null) / img.getHeight(null) * 50);
+        ImageIcon iconRedimensionado = new ImageIcon(img.getScaledInstance(larguraProporcional, 50, Image.SCALE_SMOOTH));
+
+        // Label contendo apenas a foto no centro do cabeçalho
+        JLabel lblImagemCabecalho = new JLabel(iconRedimensionado, SwingConstants.CENTER);
 
         JButton btnRecarregar = Interface.botaoRecarregar(this::recarregarTela);
 
-        cabecalho.add(titulo, BorderLayout.CENTER);
+        cabecalho.add(lblImagemCabecalho, BorderLayout.CENTER);
         cabecalho.add(btnRecarregar, BorderLayout.EAST);
 
         return cabecalho;
     }
 
-    // form de pedido
     private JComponent criarCorpo() {
         JPanel corpo = new JPanel(new BorderLayout(10, 10));
         corpo.setBackground(COR_FUNDO_PAINEL);
@@ -82,7 +88,6 @@ public class Formulario extends JPanel implements Interface {
         return corpo;
     }
 
-    // produtos
     private JComponent criarPainelCatalogo() {
         JPanel painel = new JPanel(new BorderLayout());
         painel.setPreferredSize(new Dimension(320, 0));
@@ -101,7 +106,7 @@ public class Formulario extends JPanel implements Interface {
         painel.add(painelTitulo, BorderLayout.NORTH);
 
         JPanel listaProdutos = new JPanel();
-        listaProdutos.setName("listaProdutosContainer"); // Nome adicionado para fácil localização na recarga
+        listaProdutos.setName("listaProdutosContainer");
         listaProdutos.setBackground(COR_FUNDO_PAINEL);
         listaProdutos.setLayout(new BoxLayout(listaProdutos, BoxLayout.Y_AXIS));
         listaProdutos.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
@@ -152,7 +157,6 @@ public class Formulario extends JPanel implements Interface {
     }
 
     public void recarregarTela() {
-        // limpa e reseta os itens pendentes do pedido atual
         for (ItemPedido item : itensPedido) {
             devolverEstoque(item);
         }
@@ -164,15 +168,12 @@ public class Formulario extends JPanel implements Interface {
         clienteSelecionado = null;
         atualizarTotal();
 
-        // busca o catalogo atualizado do banco de dados
         catalogo.clear();
         catalogo.addAll(produtoDAO.listar());
 
-        // limpa os campos
         labelsEstoque.clear();
         botoesAdicionar.clear();
 
-        // volta com os componentes do catalogo
         for (Component comp : getComponents()) {
             reconstruirCatalogoVisual(this);
         }
@@ -215,7 +216,6 @@ public class Formulario extends JPanel implements Interface {
         }
     }
 
-    // painel de pedido
     private JComponent criarPainelPedido() {
         JPanel painel = new JPanel(new BorderLayout(10, 10));
         painel.setBackground(COR_FUNDO_PAINEL);
@@ -461,15 +461,4 @@ public class Formulario extends JPanel implements Interface {
         clienteSelecionado = null;
         atualizarTotal();
     }
-
-    /*
-     * public static void main(String[] args) {
-     * JFrame frame = new JFrame("Miautcha - Teste do Formulario");
-     * frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-     * frame.setSize(1000, 650);
-     * frame.setLocationRelativeTo(null);
-     * frame.add(new Formulario());
-     * frame.setVisible(true);
-     * }
-     */
 }

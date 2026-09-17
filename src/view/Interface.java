@@ -4,8 +4,6 @@ import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.MatteBorder;
 import javax.swing.table.JTableHeader;
 
 public interface Interface {
@@ -45,7 +43,7 @@ public interface Interface {
         return botao;
     }
 
-    // Painéis modernos
+    // painéis modernos
     static JPanel paineis(LayoutManager layout, Color cor) {
         JPanel painel = new JPanel(layout) {
             @Override
@@ -63,7 +61,7 @@ public interface Interface {
         return painel;
     }
 
-    // Estilização do cabeçalho das tabelas
+    // estilização do cabeçalho das tabelas
     static void estilizarCabecalhoTabela(JTable tabela) {
         JTableHeader header = tabela.getTableHeader();
         header.setFont(new Font("SansSerif", Font.BOLD, 13));
@@ -122,7 +120,7 @@ public interface Interface {
         return componente;
     }
 
-    // montador do painel alinhado no centro
+    // tabela
     static JPanel criarPainelFormulario(int altura, Component... componentes) {
         JPanel painel = Interface.paineis(new GridBagLayout(), COR_FUNDO_PAINEL_ESCURO);
         painel.setPreferredSize(new Dimension(0, altura));

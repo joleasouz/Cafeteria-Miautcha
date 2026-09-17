@@ -1,15 +1,13 @@
 package view;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
+import data.dao.PedidoDAO;
 import java.awt.*;
 import java.util.List;
-
-import data.dao.PedidoDAO;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import model.ItemPedido;
 import model.Pedido;
 import model.StatusPedido;
-
 
 public class PainelComandas extends JPanel implements Interface {
 
@@ -46,9 +44,8 @@ public class PainelComandas extends JPanel implements Interface {
         titulo.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         cabecalho.add(titulo, BorderLayout.WEST);
 
-        // recarrega a lista dos pedidos do banco
-        JButton btnRecarregar = Interface.botaoArredondado("Recarregar", COR_BOTAO_PRIMARIO);
-        btnRecarregar.addActionListener(e -> carregarComandas());
+        // Botão de recarregar utilizando o método padronizado da Interface
+        JButton btnRecarregar = Interface.botaoRecarregar(this::carregarComandas);
 
         JPanel painelBotao = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
         painelBotao.setOpaque(false);
@@ -58,7 +55,7 @@ public class PainelComandas extends JPanel implements Interface {
         return cabecalho;
     }
 
-    //pega pedidos e monta as janelinhas dos cards
+    // pega pedidos e monta as janelinhas dos cards
     public void carregarComandas() {
         painelCards.removeAll();
 
@@ -98,7 +95,7 @@ public class PainelComandas extends JPanel implements Interface {
         }
     }
 
-    // chamado quando é confirmado o cancelamnto
+    // chamado quando é confirmado o cancelamento
     private void cancelarPedido(CardPedido card, Pedido pedido) {
         boolean sucesso = pedidoDAO.cancelar(pedido.getId());
 
@@ -117,7 +114,7 @@ public class PainelComandas extends JPanel implements Interface {
         painelCards.repaint();
     }
 
-    //painelzinho individual da comanda
+    // painelzinho individual da comanda
     private class CardPedido extends JPanel implements Interface {
 
         private final Pedido pedido;
@@ -201,7 +198,6 @@ public class PainelComandas extends JPanel implements Interface {
             return texto.toString().trim();
         }
 
-        //abre o coiso la pra selecionar
         private void abrirSelecaoStatus() {
             JComboBox<StatusPedido> combo = new JComboBox<>(StatusPedido.values());
             combo.removeItem(StatusPedido.cancelado());

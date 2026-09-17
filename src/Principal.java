@@ -5,8 +5,8 @@ import javax.swing.UIManager;
 import view.Formulario;
 import view.Interface;
 import view.PainelClientes;
-import view.PainelEstoque;
 import view.PainelComandas;
+import view.PainelEstoque;
 
 public class Principal extends JFrame {
     public Principal() {
