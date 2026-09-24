@@ -54,28 +54,66 @@ public class Formulario extends JPanel implements Interface {
     }
 
     private JComponent criarCabecalho() {
-        JPanel cabecalho = new JPanel(new BorderLayout());
-        cabecalho.setBackground(COR_CABECALHO);
-        cabecalho.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+    ImagemCabecalho cabecalho = new ImagemCabecalho("/assets/miautcha_cabecalho.png");
+    cabecalho.setLayout(new BorderLayout());
+    cabecalho.setPreferredSize(new Dimension(0, 70));
 
-        // Carrega a imagem da pasta src/assets/
-        ImageIcon iconOriginal = new ImageIcon(getClass().getResource("/assets/miautcha_cabecalho.png"));
-        
-        // Redimensiona a imagem para uma altura adequada de cabeçalho (ex: 50px mantendo proporção)
-        Image img = iconOriginal.getImage();
-        int larguraProporcional = (int) ((double) img.getWidth(null) / img.getHeight(null) * 50);
-        ImageIcon iconRedimensionado = new ImageIcon(img.getScaledInstance(larguraProporcional, 50, Image.SCALE_SMOOTH));
+    JButton btnRecarregar = Interface.botaoRecarregar(this::recarregarTela);
+    
+    // Altera de FlowLayout para GridBagLayout para permitir alinhamento vertical perfeito
+    JPanel painelBotao = new JPanel(new GridBagLayout());
+    painelBotao.setOpaque(false);
+    painelBotao.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10)); // Margem à direita
 
-        // Label contendo apenas a foto no centro do cabeçalho
-        JLabel lblImagemCabecalho = new JLabel(iconRedimensionado, SwingConstants.CENTER);
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+    gbc.anchor = GridBagConstraints.CENTER; // Centraliza o botão verticalmente e horizontalmente no painel
+    painelBotao.add(btnRecarregar, gbc);
 
-        JButton btnRecarregar = Interface.botaoRecarregar(this::recarregarTela);
+    cabecalho.add(painelBotao, BorderLayout.EAST);
 
-        cabecalho.add(lblImagemCabecalho, BorderLayout.CENTER);
-        cabecalho.add(btnRecarregar, BorderLayout.EAST);
+    return cabecalho;
+}
 
-        return cabecalho;
+// painel da imagem do cabeçalho
+private static class ImagemCabecalho extends JPanel {
+    private final Image imagem;
+
+    ImagemCabecalho(String caminhoRecurso) {
+        ImageIcon icon = new ImageIcon(getClass().getResource(caminhoRecurso));
+        this.imagem = icon.getImage();
+        setOpaque(true);
     }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        int larguraPainel = getWidth();
+        int alturaPainel = getHeight();
+        int larguraImg = imagem.getWidth(this);
+        int alturaImg = imagem.getHeight(this);
+
+        if (larguraImg <= 0 || alturaImg <= 0) return;
+
+        double escala = Math.max(
+                (double) larguraPainel / larguraImg,
+                (double) alturaPainel / alturaImg
+        );
+
+        int novaLargura = (int) (larguraImg * escala);
+        int novaAltura = (int) (alturaImg * escala);
+
+        int x = (larguraPainel - novaLargura) / 2;
+        int y = (alturaPainel - novaAltura) / 2;
+
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setClip(0, 0, larguraPainel, alturaPainel);
+        g2.drawImage(imagem, x, y, novaLargura, novaAltura, this);
+        g2.dispose();
+    }
+}
 
     private JComponent criarCorpo() {
         JPanel corpo = new JPanel(new BorderLayout(10, 10));
@@ -144,7 +182,7 @@ public class Formulario extends JPanel implements Interface {
         textos.add(lblEstoque);
         labelsEstoque.put(produto, lblEstoque);
 
-        JButton btnAdicionar = Interface.botaoArredondado("+", COR_BOTAO_VERDE);
+        JButton btnAdicionar = Interface.botaoArredondado("+", COR_VERDE_ESCURO);
         btnAdicionar.addActionListener(e -> adicionarItemAoPedido(produto));
         botoesAdicionar.put(produto, btnAdicionar);
 
@@ -207,7 +245,7 @@ public class Formulario extends JPanel implements Interface {
 
         if (produto.getQntdEstoque() <= 0) {
             lblEstoque.setText("Esgotado");
-            lblEstoque.setForeground(COR_BOTAO_VERMELHO);
+            lblEstoque.setForeground(COR_VERMELHO);
             btnAdicionar.setEnabled(false);
         } else {
             lblEstoque.setText("Estoque: " + produto.getQntdEstoque());
@@ -285,17 +323,17 @@ public class Formulario extends JPanel implements Interface {
         JPanel painel = new JPanel(new BorderLayout());
         painel.setBackground(COR_FUNDO_PAINEL);
 
-        JButton btnRemover = Interface.botaoArredondado("Remover item selecionado", COR_BOTAO_VERMELHO);
+        JButton btnRemover = Interface.botaoArredondado("Remover item selecionado", COR_VERMELHO);
         btnRemover.addActionListener(e -> removerItemSelecionado());
 
-        JButton btnCancelar = Interface.botaoArredondado("Cancelar pedido", COR_BOTAO_VERMELHO);
+        JButton btnCancelar = Interface.botaoArredondado("Cancelar pedido", COR_VERMELHO);
         btnCancelar.addActionListener(e -> cancelarPedido());
 
         lblTotal = new JLabel("Total: R$ 0,00");
         lblTotal.setFont(lblTotal.getFont().deriveFont(Font.BOLD, 16f));
         lblTotal.setForeground(COR_TITULO);
 
-        JButton btnFinalizar = Interface.botaoArredondado("Finalizar Pedido", COR_BOTAO_VERDE);
+        JButton btnFinalizar = Interface.botaoArredondado("Finalizar Pedido", COR_VERDE_ESCURO);
         btnFinalizar.addActionListener(e -> finalizarPedido());
 
         JPanel botoes = new JPanel(new FlowLayout(FlowLayout.RIGHT));

@@ -86,8 +86,8 @@ public final class PainelEstoque extends JPanel implements Interface {
 
         // campos de dados e botoes
         txtAjusteQtd = Interface.comTamanho(Interface.campoDados(" "), 100, 35);
-        btnAdicionarEstoque = Interface.botaoArredondado("+ Entrada", COR_BOTAO_VERDE);
-        btnRemoverEstoque = Interface.botaoArredondado("- Baixa", COR_BOTAO_VERMELHO);
+        btnAdicionarEstoque = Interface.botaoArredondado("+ Entrada", COR_VERDE_ESCURO);
+        btnRemoverEstoque = Interface.botaoArredondado("- Baixa", COR_VERMELHO);
 
         lblStatusEstoque = new JLabel("Status: Selecione um produto");
         lblStatusEstoque.setFont(new Font("SansSerif", Font.BOLD, 12));
@@ -105,7 +105,7 @@ public final class PainelEstoque extends JPanel implements Interface {
 
         txtPesquisa = Interface.comTamanho(Interface.campoDados("Buscar produto"), 200, 35);
         btnPesquisar = Interface.botaoArredondado("Pesquisar", COR_BOTAO_PRIMARIO);
-        btnExcluir = Interface.botaoArredondado("Excluir Produto", COR_BOTAO_VERMELHO);
+        btnExcluir = Interface.botaoArredondado("Excluir Produto", COR_VERMELHO);
 
         painelAcoes.add(txtPesquisa);
         painelAcoes.add(btnPesquisar);

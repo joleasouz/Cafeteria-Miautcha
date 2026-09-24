@@ -15,9 +15,10 @@ public interface Interface {
     Color COR_TITULO = new Color(111, 78, 55); // marrom médio
     Color COR_TEXTO = new Color(66, 48, 36); // marrom escuro
     Color COR_BOTAO_PRIMARIO = new Color(111, 78, 55); // ações principais
-    Color COR_BOTAO_VERDE = new Color(63, 71, 62); // aumento
-    Color COR_BOTAO_VERMELHO = new Color(140, 14, 0); // baixa
-    Color COR_TEXTO_BOTAO = Color.WHITE;
+    Color COR_VERDE_ESCURO = new Color(63, 71, 62); // aumento
+    Color COR_VERDE = new Color(162, 161, 130); // verde clarinho padrao
+    Color COR_VERMELHO = new Color(140, 14, 0); // baixa
+    Color COR_BRANCO = Color.WHITE;
     Color COR_SELECAO_TABELA = new Color(230, 215, 195);
 
     // Método para criar botões arredondados e com efeito de clique
@@ -34,7 +35,7 @@ public interface Interface {
             }
         };
         botao.setFont(new Font("SansSerif", Font.BOLD, 11));
-        botao.setForeground(COR_TEXTO_BOTAO);
+        botao.setForeground(COR_BRANCO);
         botao.setFocusPainted(false);
         botao.setContentAreaFilled(false);
         botao.setOpaque(false);
@@ -137,7 +138,7 @@ public interface Interface {
 
     // metodo de criar botao p recarregar
     static JButton botaoRecarregar(Runnable acaoRecarregar) {
-        JButton botao = botaoArredondado("↻", COR_BOTAO_PRIMARIO);
+        JButton botao = botaoArredondado("↻", COR_VERDE);
         botao.setFont(new Font("SansSerif", Font.BOLD, 18));
         botao.addActionListener(e -> acaoRecarregar.run());
         return botao;

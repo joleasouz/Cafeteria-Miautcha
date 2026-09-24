@@ -165,7 +165,7 @@ public class PainelComandas extends JPanel implements Interface {
             atualizarTextoStatus();
 
             JButton btnAtualizar = Interface.botaoArredondado("Atualizar", COR_BOTAO_PRIMARIO);
-            JButton btnCancelar = Interface.botaoArredondado("Cancelar pedido", COR_BOTAO_VERMELHO);
+            JButton btnCancelar = Interface.botaoArredondado("Cancelar pedido", COR_VERMELHO);
 
             btnAtualizar.addActionListener(e -> abrirSelecaoStatus());
             btnCancelar.addActionListener(e -> confirmarCancelamento());
@@ -243,10 +243,10 @@ public class PainelComandas extends JPanel implements Interface {
 
             switch (pedido.getStatus()) {
                 case PENDENTE:
-                    lblStatus.setForeground(COR_BOTAO_VERMELHO);
+                    lblStatus.setForeground(COR_VERMELHO);
                     break;
                 case PRONTO:
-                    lblStatus.setForeground(COR_BOTAO_VERDE);
+                    lblStatus.setForeground(COR_VERDE_ESCURO);
                     break;
                 case PREPARANDO:
                 default:
